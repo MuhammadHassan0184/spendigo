@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // static final Color primary = Color(0xFF0F3F31);
-  static final Color primary = Color(0xFF1B6E57);
+  static final Color primary = Color(0xff2F7D74);
   static final Color secondary = Color(0xFF2A7C76);
   static final Color stroke = Color(0xFFD9D9D9);
   static final Color white = Color(0xFFFFFFFF);

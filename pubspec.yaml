@@ -37,6 +37,7 @@ dependencies:
   flutter_svg: ^2.2.4
   get: ^4.7.3
   flutter_screenutil: ^5.9.3
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

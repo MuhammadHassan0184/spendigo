@@ -6,6 +6,7 @@ import 'package:spendigo/view/Auth/sign_up.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/onboarding/onboarding1.dart';
+import 'package:spendigo/view/statistics/statistics_screen.dart';
 
 class AppRoutes {
   // ignore: strict_top_level_inference
@@ -17,5 +18,6 @@ class AppRoutes {
     GetPage(name: AppRoutesName.signIn, page: () => const SignIn()),
     GetPage(name: AppRoutesName.signUp, page: () => const Signup()),
     GetPage(name: AppRoutesName.home, page: () => const Home()),
+    GetPage(name: AppRoutesName.statistics, page: () => const StatisticsScreen()),
   ];
 }
