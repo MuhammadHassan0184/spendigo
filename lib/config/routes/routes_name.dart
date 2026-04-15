@@ -5,4 +5,5 @@ class AppRoutesName {
   static const String onboarding3 = '/onboarding3';
   static const String signIn = '/signIn';
   static const String signUp = '/signUp';
+  static const String home = '/home';
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/view/Auth/sign_in.dart';
 import 'package:spendigo/view/Auth/sign_up.dart';
+import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/onboarding/onboarding1.dart';
 
@@ -15,5 +16,6 @@ class AppRoutes {
     GetPage(name: AppRoutesName.onboarding3, page: () => const Onboarding1(initialPage: 2)),
     GetPage(name: AppRoutesName.signIn, page: () => const SignIn()),
     GetPage(name: AppRoutesName.signUp, page: () => const Signup()),
+    GetPage(name: AppRoutesName.home, page: () => const Home()),
   ];
 }
