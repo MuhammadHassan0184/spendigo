@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:spendigo/config/colors.dart';
-import 'package:spendigo/widgets/transaction_tile.dart';
+import 'package:spendigo/widgets/home_transaction_tile.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

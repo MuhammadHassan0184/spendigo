@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendigo/config/colors.dart';
-import 'package:spendigo/view/statistics/Budget_graph.dart';
-import 'package:spendigo/view/statistics/expense_income_graph.dart';
+import 'package:spendigo/view/statistics/graph/Budget_graph.dart';
+import 'package:spendigo/view/statistics/graph/expense_income_graph.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 
 class StatisticsScreen extends StatelessWidget {

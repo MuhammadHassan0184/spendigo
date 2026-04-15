@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/statistics/statistics_screen.dart';
+import 'package:spendigo/view/wallets/wallet_screen.dart';
 import 'package:spendigo/widgets/custom_navbar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> screens = [
     Home(),
     StatisticsScreen(),
-    Center(child: Text("Wallets")),
+    WalletScreen(),
     Center(child: Text("Budgets")),
     Center(child: Text("Profile")),
   ];

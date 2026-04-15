@@ -7,4 +7,5 @@ class AppRoutesName {
   static const String signUp = '/signUp';
   static const String home = '/home';
   static const String statistics = '/statisticsScreen';
+  static const String wallet = '/walletScreen';
 }
