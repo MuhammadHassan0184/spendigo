@@ -63,7 +63,7 @@ class _BudgetCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           // ✅ visible border added
-          color: Colors.grey.shade200,
+          color: AppColors.stroke,
           width: 1.5,
         ),
       ),
@@ -125,7 +125,7 @@ class _BudgetCard extends StatelessWidget {
           // Spent / Total
           Text(
             'Rs.${spent.toStringAsFixed(0)} of Rs.${total.toStringAsFixed(0)}',
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 13, color: AppColors.grey),
           ),
         ],
       ),
