@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/budgets/budget_screen.dart';
+import 'package:spendigo/view/profile/profile.dart';
 import 'package:spendigo/view/statistics/statistics_screen.dart';
 import 'package:spendigo/view/wallets/wallet_screen.dart';
 import 'package:spendigo/widgets/custom_navbar.dart';
@@ -20,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     StatisticsScreen(),
     WalletScreen(),
     BudgetsScreen(),
-    Center(child: Text("Profile")),
+    ProfileScreen(),
   ];
 
   @override

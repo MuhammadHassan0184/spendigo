@@ -1,34 +1,116 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/widgets/setting_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static const Color primaryGreen = Color(0xFF2F7E79);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Stack(
-        children: const [
-          _MainContent(),
-          _ProfileCard(),
-        ],
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _Header(),
+              _ProfileCard(),
+              // _SettingsSection(),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.stroke, width: 1.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        'Settings',
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    CustomListTile(
+                      title: "Password",
+                      svgPath: "assets/password.svg",
+                      onTap: () {},
+                    ),
+                    Divider(height: 1, color: AppColors.stroke),
+                    CustomListTile(
+                      title: "FAQ",
+                      svgPath: "assets/faqs.svg",
+                      onTap: () {},
+                    ),
+                    Divider(height: 1, color: AppColors.stroke),
+                    CustomListTile(
+                      title: "Bug report & Feedback",
+                      svgPath: "assets/report.svg",
+                      onTap: () {},
+                    ),
+                    Divider(height: 1, color: AppColors.stroke),
+                    CustomListTile(
+                      title: "Rate us on Google Play",
+                      svgPath: "assets/star.svg",
+                      onTap: () {},
+                    ),
+                    Divider(height: 1, color: AppColors.stroke),
+                    CustomListTile(
+                      title: "Share with friends",
+                      svgPath: "assets/share.svg",
+                      onTap: () {},
+                    ),
+                    Divider(height: 1, color: AppColors.stroke),
+                    CustomListTile(
+                      title: "Privacy Policy",
+                      svgPath: "assets/privacy.svg",
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // logout Button
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Icon(Icons.logout, color: Colors.white, size: 20),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20,)
+            ],
+          ),
+        ),
       ),
-    );
-  }
-}
-
-class _MainContent extends StatelessWidget {
-  const _MainContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        _Header(),
-        Expanded(child: _SettingsSection()),
-      ],
     );
   }
 }
@@ -38,73 +120,34 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 160,
-      padding: const EdgeInsets.only(top: 5, bottom: 5, left: 50, right: 16),
-      decoration: const BoxDecoration(
-        color: ProfileScreen.primaryGreen,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
-      child: const Center(
-        child: Text(
-          'Profile',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return Stack(
+      children: [
+        Container(
+          height: 130,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.secondary,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+          alignment: Alignment.center,
+          child: const Text(
+            'Profile',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SettingsSection extends StatelessWidget {
-  const _SettingsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 70, 16, 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200, width: 1.5),
+        Positioned(
+          top: -20,
+          left: -20,
+          child: Image.asset("assets/circle.png", width: 180),
         ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Text(
-                'Settings',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            _SettingsItem(icon: Icons.lock_outline, label: 'Password'),
-            _SettingsItem(icon: Icons.help_outline, label: 'FAQ'),
-            _SettingsItem(
-                icon: Icons.flag_outlined, label: 'Bug report & Feedback'),
-            _SettingsItem(
-                icon: Icons.star_outline, label: 'Rate us on Google Play'),
-            _SettingsItem(
-                icon: Icons.share_outlined, label: 'Share with friends'),
-            _SettingsItem(
-              icon: Icons.article_outlined,
-              label: 'Privacy Policy',
-              isLast: true,
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
@@ -114,30 +157,31 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 100,
-      left: 16,
-      right: 16,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: ProfileScreen.primaryGreen,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            _Avatar(),
-            const SizedBox(width: 16),
-            const Expanded(child: _UserInfo()),
-            const _EditButton(),
-          ],
+    return Transform.translate(
+      offset: const Offset(0, -35), // overlap effect
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Row(
+            children: const [
+              _Avatar(),
+              SizedBox(width: 16),
+              Expanded(child: _UserInfo()),
+              _EditButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -145,6 +189,8 @@ class _ProfileCard extends StatelessWidget {
 }
 
 class _Avatar extends StatelessWidget {
+  const _Avatar();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -154,9 +200,7 @@ class _Avatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.grey.shade200, width: 2),
         image: const DecorationImage(
-          image: NetworkImage(
-            'https://randomuser.me/api/portraits/men/32.jpg',
-          ),
+          image: NetworkImage('https://randomuser.me/api/portraits/men/32.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -183,10 +227,7 @@ class _UserInfo extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           'aliahmad@gmail.com',
-          style: TextStyle(
-            color: Color(0xFFD9D9D9),
-            fontSize: 13,
-          ),
+          style: TextStyle(color: Color(0xFFD9D9D9), fontSize: 13),
         ),
       ],
     );
@@ -204,66 +245,16 @@ class _EditButton extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.edit, color: ProfileScreen.primaryGreen, size: 14),
-          SizedBox(width: 4),
+          Icon(Icons.edit, color: AppColors.primary, size: 14),
+          const SizedBox(width: 4),
           Text(
             'Edit',
-            style: TextStyle(
-              color: ProfileScreen.primaryGreen,
-              fontSize: 13,
-            ),
+            style: TextStyle(color: AppColors.primary, fontSize: 13),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SettingsItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isLast;
-
-  const _SettingsItem({
-    required this.icon,
-    required this.label,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: ProfileScreen.primaryGreen, size: 20),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(fontSize: 13),
-                ),
-              ),
-              const Icon(Icons.chevron_right,
-                  color: Color(0xFF2F7E79), size: 22),
-            ],
-          ),
-        ),
-        if (!isLast)
-          Divider(height: 1, indent: 72, color: Colors.grey.shade200),
-      ],
     );
   }
 }
