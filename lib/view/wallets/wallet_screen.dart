@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/view/wallets/graph/total_wealth_graph.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
+import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/wallet_tile.dart';
 
 class WalletScreen extends StatelessWidget {
@@ -35,6 +36,11 @@ class WalletScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: CustomFAB(
+        onTap: () {
+          // your action
+        },
       ),
     );
   }

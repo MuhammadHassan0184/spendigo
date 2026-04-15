@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 
 class Home extends StatefulWidget {
@@ -307,12 +308,10 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.primary,
-        elevation: 3,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-        child: Icon(Icons.add, size: 30, color: AppColors.white),
+      floatingActionButton: CustomFAB(
+        onTap: () {
+          // your action
+        },
       ),
     );
   }

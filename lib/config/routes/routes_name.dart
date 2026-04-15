@@ -8,4 +8,5 @@ class AppRoutesName {
   static const String home = '/home';
   static const String statistics = '/statisticsScreen';
   static const String wallet = '/walletScreen';
+  static const String budgets = '/budgetsScreen';
 }
