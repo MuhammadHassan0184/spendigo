@@ -4,6 +4,7 @@ import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/view/Auth/ForgotPassword/forgot_password.dart';
 import 'package:spendigo/view/Auth/sign_in.dart';
 import 'package:spendigo/view/Auth/sign_up.dart';
+import 'package:spendigo/view/DashBoard/add_transaction.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/budgets/budget_screen.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
     GetPage(name: AppRoutesName.profileDetail, page: () => const ProfileDetail()),
     GetPage(name: AppRoutesName.password, page: () => const PasswordScreen()),
     GetPage(name: AppRoutesName.forgotPassword, page: () => const ForgotPassword()),
+    GetPage(name: AppRoutesName.addTransaction, page: () => AddTransaction()),
 
   ];
 }

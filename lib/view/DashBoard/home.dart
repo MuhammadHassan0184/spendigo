@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/state_manager.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 
@@ -310,7 +313,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: CustomFAB(
         onTap: () {
-          // your action
+          Get.toNamed(AppRoutesName.addTransaction);
         },
       ),
     );

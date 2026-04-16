@@ -13,5 +13,5 @@ class AppRoutesName {
   static const String profileDetail = '/ProfileDetail';
   static const String password = '/PasswordScreen';
   static const String forgotPassword = '/forgotPassword';
-
+  static const String addTransaction = '/addTransaction';
 }
