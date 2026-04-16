@@ -1,6 +1,7 @@
 
 import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/view/Auth/ForgotPassword/forgot_password.dart';
 import 'package:spendigo/view/Auth/sign_in.dart';
 import 'package:spendigo/view/Auth/sign_up.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
@@ -29,5 +30,7 @@ class AppRoutes {
     GetPage(name: AppRoutesName.profile, page: () => const ProfileScreen()),
     GetPage(name: AppRoutesName.profileDetail, page: () => const ProfileDetail()),
     GetPage(name: AppRoutesName.password, page: () => const PasswordScreen()),
+    GetPage(name: AppRoutesName.forgotPassword, page: () => const ForgotPassword()),
+
   ];
 }

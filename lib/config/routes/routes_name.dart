@@ -12,4 +12,6 @@ class AppRoutesName {
   static const String profile = '/profileScreen';
   static const String profileDetail = '/ProfileDetail';
   static const String password = '/PasswordScreen';
+  static const String forgotPassword = '/forgotPassword';
+
 }

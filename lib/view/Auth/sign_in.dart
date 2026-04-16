@@ -104,12 +104,17 @@ class SignIn extends StatelessWidget {
 
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Text(
-                            "Forgot your Password?",
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14.sp,
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.toNamed(AppRoutesName.forgotPassword);
+                            },
+                            child: Text(
+                              "Forgot your Password?",
+                              style: TextStyle(
+                                color: AppColors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.sp,
+                              ),
                             ),
                           ),
                         ),

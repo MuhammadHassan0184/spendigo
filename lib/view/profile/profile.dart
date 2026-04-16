@@ -93,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Logout',
+                      'Log Out',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
