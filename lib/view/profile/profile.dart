@@ -202,7 +202,7 @@ class _Avatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.grey.shade200, width: 2),
         image: const DecorationImage(
-          image: NetworkImage('https://randomuser.me/api/portraits/men/32.jpg'),
+          image: AssetImage("assets/profile.jpeg"),
           fit: BoxFit.cover,
         ),
       ),

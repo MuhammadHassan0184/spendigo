@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../config/colors.dart'; // adjust path
 
-class AuthTextField extends StatefulWidget {
+class CustomTextField extends StatefulWidget {
   final String label;
   final String hintText;
   final bool isPassword;
   final TextInputType keyboardType;
   final TextEditingController? controller;
 
-  const AuthTextField({
+  const CustomTextField({
     super.key,
     required this.label,
     required this.hintText,
@@ -18,10 +18,10 @@ class AuthTextField extends StatefulWidget {
   });
 
   @override
-  State<AuthTextField> createState() => _AuthTextFieldState();
+  State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
-class _AuthTextFieldState extends State<AuthTextField> {
+class _CustomTextFieldState extends State<CustomTextField> {
   bool _obscureText = true;
 
   @override

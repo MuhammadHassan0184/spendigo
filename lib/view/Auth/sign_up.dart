@@ -6,7 +6,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
-import 'package:spendigo/widgets/auth_textfield.dart';
+import 'package:spendigo/widgets/custom_textfield.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
 class Signup extends StatelessWidget {
@@ -84,14 +84,14 @@ class Signup extends StatelessWidget {
                         SizedBox(height: 15.h),
 
                         /// NAME
-                        AuthTextField(
+                        CustomTextField(
                           label: "Name",
                           hintText: "Enter your name",
                         ),
                         SizedBox(height: 15.h),
 
                         /// EMAIL
-                        AuthTextField(
+                        CustomTextField(
                           label: "Email",
                           hintText: "Enter your email",
                           keyboardType: TextInputType.emailAddress,
@@ -100,7 +100,7 @@ class Signup extends StatelessWidget {
                         SizedBox(height: 15.h),
 
                         /// PASSWORD
-                        AuthTextField(
+                        CustomTextField(
                           label: "Password",
                           hintText: "Enter your password",
                           isPassword: true,
@@ -109,7 +109,7 @@ class Signup extends StatelessWidget {
                         SizedBox(height: 15.h),
 
                         /// CONFIRM PASSWORD
-                        AuthTextField(
+                        CustomTextField(
                           label: "Confirm Password",
                           hintText: "Enter your password again",
                           isPassword: true,
