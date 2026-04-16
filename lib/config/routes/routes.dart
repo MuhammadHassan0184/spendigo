@@ -8,6 +8,7 @@ import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/budgets/budget_screen.dart';
 import 'package:spendigo/view/onboarding/onboarding1.dart';
 import 'package:spendigo/view/profile/profile.dart';
+import 'package:spendigo/view/profile/profile_detail.dart';
 import 'package:spendigo/view/statistics/statistics_screen.dart';
 import 'package:spendigo/view/wallets/wallet_screen.dart';
 
@@ -25,5 +26,6 @@ class AppRoutes {
     GetPage(name: AppRoutesName.wallet, page: () => const WalletScreen()),
     GetPage(name: AppRoutesName.budgets, page: () => const BudgetsScreen()),
     GetPage(name: AppRoutesName.profile, page: () => const ProfileScreen()),
+    GetPage(name: AppRoutesName.profileDetail, page: () => const ProfileDetail()),
   ];
 }

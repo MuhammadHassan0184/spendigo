@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -106,7 +108,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20,)
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -239,21 +241,27 @@ class _EditButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.edit, color: AppColors.primary, size: 14),
-          const SizedBox(width: 4),
-          Text(
-            'Edit',
-            style: TextStyle(color: AppColors.primary, fontSize: 13),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(AppRoutesName.profileDetail);
+      },
+
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.edit, color: AppColors.primary, size: 14),
+            const SizedBox(width: 4),
+            Text(
+              'Edit',
+              style: TextStyle(color: AppColors.primary, fontSize: 13),
+            ),
+          ],
+        ),
       ),
     );
   }
