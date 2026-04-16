@@ -11,4 +11,5 @@ class AppRoutesName {
   static const String budgets = '/budgetsScreen';
   static const String profile = '/profileScreen';
   static const String profileDetail = '/ProfileDetail';
+  static const String password = '/PasswordScreen';
 }

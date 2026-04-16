@@ -43,7 +43,9 @@ class ProfileScreen extends StatelessWidget {
                     CustomListTile(
                       title: "Password",
                       svgPath: "assets/password.svg",
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(AppRoutesName.password);
+                      },
                     ),
                     Divider(height: 1, color: AppColors.stroke),
                     CustomListTile(
