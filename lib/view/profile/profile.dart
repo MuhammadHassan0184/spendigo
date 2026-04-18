@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -71,7 +72,11 @@ class ProfileScreen extends StatelessWidget {
                     CustomListTile(
                       title: "Share with friends",
                       svgPath: "assets/share.svg",
-                      onTap: () {},
+                      onTap: () {
+                        Share.share(
+                          'Manage your expenses easily with Spendigo 🚀\nDownload now: https://play.google.com/store/apps/details?id=com.yourapp.package',
+                        );
+                      },
                     ),
                     Divider(height: 1, color: AppColors.stroke),
                     CustomListTile(
