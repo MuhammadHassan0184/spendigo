@@ -60,7 +60,7 @@ class _ReportFeedbackState extends State<ReportFeedback> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          content: Text("Something went wrong",),
+          content: Text("Something went wrong"),
           behavior: SnackBarBehavior.floating,
         ),
       );
