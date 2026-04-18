@@ -12,25 +12,27 @@ class PasswordScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: CustomAppBar(title: "password", showBackButton: true),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            CustomTextField(
-              label: "Password",
-              hintText: "password",
-              isPassword: true,
-            ),
-            SizedBox(height: 10),
-            CustomTextField(
-              label: "Confirm Password",
-              hintText: "Confirm password",
-              isPassword: true,
-            ),
-            SizedBox(height: 20),
-            CustomButton(text: "Update", onPressed: () {}),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              CustomTextField(
+                label: "Password",
+                hintText: "password",
+                isPassword: true,
+              ),
+              SizedBox(height: 10),
+              CustomTextField(
+                label: "Confirm Password",
+                hintText: "Confirm password",
+                isPassword: true,
+              ),
+              SizedBox(height: 20),
+              CustomButton(text: "Update", onPressed: () {}),
+            ],
+          ),
         ),
       ),
     );

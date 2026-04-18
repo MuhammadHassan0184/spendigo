@@ -12,43 +12,45 @@ class ReportFeedback extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: CustomAppBar(title: "Report's & FeedBack", showBackButton: true),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            SizedBox(height: 15),
-            CustomTextField(label: "Name", hintText: "Enter your Name"),
-            SizedBox(height: 15),
-            CustomTextField(label: "Email", hintText: "Enter your Email"),
-            SizedBox(height: 15),
-            Row(
-              children: [
-                Text(
-                  "Note",
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 13),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.stroke),
-                borderRadius: BorderRadius.circular(17),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              SizedBox(height: 15),
+              CustomTextField(label: "Name", hintText: "Enter your Name"),
+              SizedBox(height: 15),
+              CustomTextField(label: "Email", hintText: "Enter your Email"),
+              SizedBox(height: 15),
+              Row(
+                children: [
+                  Text(
+                    "Note",
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
-              child: TextField(
-                maxLines: 5,
-                decoration: InputDecoration(
-                  hintText: "Type Your Note..",
-                  hintStyle: TextStyle(color: AppColors.grey, fontSize: 14),
-                  border: InputBorder.none,
+              SizedBox(height: 15),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 13),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.stroke),
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                child: TextField(
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: "Type Your Note..",
+                    hintStyle: TextStyle(color: AppColors.grey, fontSize: 14),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 15),
-            CustomButton(text: "Send", onPressed: () {}),
-          ],
+              SizedBox(height: 15),
+              CustomButton(text: "Send", onPressed: () {}),
+            ],
+          ),
         ),
       ),
     );
