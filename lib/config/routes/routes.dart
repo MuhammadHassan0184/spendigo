@@ -11,8 +11,10 @@ import 'package:spendigo/view/budgets/budget_screen.dart';
 import 'package:spendigo/view/budgets/create_budget.dart';
 import 'package:spendigo/view/onboarding/onboarding1.dart';
 import 'package:spendigo/view/profile/password_screen.dart';
+import 'package:spendigo/view/profile/privacy_policy.dart';
 import 'package:spendigo/view/profile/profile.dart';
 import 'package:spendigo/view/profile/profile_detail.dart';
+import 'package:spendigo/view/profile/report_feedback.dart';
 import 'package:spendigo/view/statistics/statistics_screen.dart';
 import 'package:spendigo/view/wallets/create_wallet.dart';
 import 'package:spendigo/view/wallets/wallet_screen.dart';
@@ -37,6 +39,8 @@ class AppRoutes {
     GetPage(name: AppRoutesName.addTransaction, page: () => AddTransaction()),
     GetPage(name: AppRoutesName.createWallet, page: () => CreateWallet()),
     GetPage(name: AppRoutesName.createBudget, page: () => CreateBudget()),
+    GetPage(name: AppRoutesName.reportFeedback, page: () => ReportFeedback()),
+    GetPage(name: AppRoutesName.privacyPolicyScreen, page: () => PrivacyPolicyScreen()),
 
 
   ];

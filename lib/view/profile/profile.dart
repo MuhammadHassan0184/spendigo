@@ -47,17 +47,19 @@ class ProfileScreen extends StatelessWidget {
                         Get.toNamed(AppRoutesName.password);
                       },
                     ),
-                    Divider(height: 1, color: AppColors.stroke),
-                    CustomListTile(
-                      title: "FAQ",
-                      svgPath: "assets/faqs.svg",
-                      onTap: () {},
-                    ),
+                    // Divider(height: 1, color: AppColors.stroke),
+                    // CustomListTile(
+                    //   title: "FAQ",
+                    //   svgPath: "assets/faqs.svg",
+                    //   onTap: () {},
+                    // ),
                     Divider(height: 1, color: AppColors.stroke),
                     CustomListTile(
                       title: "Bug report & Feedback",
                       svgPath: "assets/report.svg",
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(AppRoutesName.reportFeedback);
+                      },
                     ),
                     Divider(height: 1, color: AppColors.stroke),
                     CustomListTile(
@@ -75,7 +77,9 @@ class ProfileScreen extends StatelessWidget {
                     CustomListTile(
                       title: "Privacy Policy",
                       svgPath: "assets/privacy.svg",
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(AppRoutesName.privacyPolicyScreen);
+                      },
                     ),
                   ],
                 ),

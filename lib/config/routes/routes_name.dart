@@ -16,4 +16,6 @@ class AppRoutesName {
   static const String addTransaction = '/addTransaction';
   static const String createWallet = '/createWallet';
   static const String createBudget = '/createBudget';
+  static const String reportFeedback = '/reportFeedback';
+  static const String privacyPolicyScreen = '/PrivacyPolicyScreen';
 }
