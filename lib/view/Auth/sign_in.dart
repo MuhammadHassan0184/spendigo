@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/state_manager.dart';
 
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/controller/Auth_controller/signin_controller.dart';
 import 'package:spendigo/view/DashBoard/main_screen.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  final controller = Get.put(SigninController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,15 +94,15 @@ class SignIn extends StatelessWidget {
 
                         /// EMAIL
                         CustomTextField(
+                          controller: controller.emailController,
                           label: "Email",
                           hintText: "Enter your email",
-                          keyboardType: TextInputType.emailAddress,
                         ),
-
                         SizedBox(height: 15.h),
 
                         /// PASSWORD
                         CustomTextField(
+                          controller: controller.passwordController,
                           label: "Password",
                           hintText: "Enter your password",
                           isPassword: true,
@@ -125,7 +133,7 @@ class SignIn extends StatelessWidget {
                         CustomButton(
                           text: "Sign In",
                           onPressed: () {
-                            Get.offAll(() => MainScreen());
+                            controller.login(context);
                           },
                         ),
 

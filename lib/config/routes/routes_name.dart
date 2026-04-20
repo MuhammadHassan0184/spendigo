@@ -6,6 +6,7 @@ class AppRoutesName {
   static const String signIn = '/signIn';
   static const String signUp = '/signUp';
   static const String home = '/home';
+  static const String mainScreen = '/MainScreen';
   static const String statistics = '/statisticsScreen';
   static const String wallet = '/walletScreen';
   static const String budgets = '/budgetsScreen';

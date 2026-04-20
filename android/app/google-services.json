@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "619374809014",
+    "project_id": "spendigo-299c5",
+    "storage_bucket": "spendigo-299c5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619374809014:android:47e2d7d08670dc29e93b17",
+        "android_client_info": {
+          "package_name": "com.example.spendigo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeViywpcPz5FlYPfOsUvPVfs8tisx5aBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

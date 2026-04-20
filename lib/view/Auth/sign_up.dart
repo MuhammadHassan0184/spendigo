@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/controller/Auth_controller/signup_controller.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
-class Signup extends StatelessWidget {
+class Signup extends StatefulWidget {
   const Signup({super.key});
 
+  @override
+  State<Signup> createState() => _SignupState();
+}
+
+class _SignupState extends State<Signup> {
+  final controller = Get.put(SignupController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,22 +93,24 @@ class Signup extends StatelessWidget {
 
                         /// NAME
                         CustomTextField(
+                          controller: controller.nameController,
                           label: "Name",
                           hintText: "Enter your name",
                         ),
+
                         SizedBox(height: 15.h),
 
                         /// EMAIL
                         CustomTextField(
+                          controller: controller.emailController,
                           label: "Email",
                           hintText: "Enter your email",
-                          keyboardType: TextInputType.emailAddress,
                         ),
-
                         SizedBox(height: 15.h),
 
                         /// PASSWORD
                         CustomTextField(
+                          controller: controller.passwordController,
                           label: "Password",
                           hintText: "Enter your password",
                           isPassword: true,
@@ -110,6 +120,7 @@ class Signup extends StatelessWidget {
 
                         /// CONFIRM PASSWORD
                         CustomTextField(
+                          controller: controller.confirmPasswordController,
                           label: "Confirm Password",
                           hintText: "Enter your password again",
                           isPassword: true,
@@ -121,7 +132,7 @@ class Signup extends StatelessWidget {
                         CustomButton(
                           text: "Sign Up",
                           onPressed: () {
-                            // Get.toNamed(AppRoutesName.home);
+                            controller.signup();
                           },
                         ),
 

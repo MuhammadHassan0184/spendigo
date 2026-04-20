@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
-import 'package:spendigo/view/controller/profile_controller.dart';
+import 'package:spendigo/controller/profile_controller.dart';
 
 class ProfileImagePicker extends StatelessWidget {
   ProfileImagePicker({super.key});

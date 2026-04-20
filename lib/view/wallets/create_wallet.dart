@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
-import 'package:spendigo/view/controller/wallet_controller.dart';
+import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
