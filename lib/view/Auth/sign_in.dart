@@ -7,8 +7,8 @@ import 'package:get/state_manager.dart';
 
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/controller/Auth_controller/google_controller.dart';
 import 'package:spendigo/controller/Auth_controller/signin_controller.dart';
-import 'package:spendigo/view/DashBoard/main_screen.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
@@ -21,6 +21,7 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final controller = Get.put(SigninController());
+  final googleController = GoogleLoginController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,30 +201,34 @@ class _SignInState extends State<SignIn> {
                         SizedBox(height: 20.h),
 
                         /// GOOGLE BUTTON
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 14.h),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.stroke),
-                            borderRadius: BorderRadius.circular(15.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/google_icon.svg",
-                                height: 22.h,
-                                width: 22.w,
-                              ),
-                              SizedBox(width: 10.w),
-                              Text(
-                                "Google",
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w500,
+                        GestureDetector(
+                          onTap: () {
+                            googleController.signInWithGoogle(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 14.h),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.stroke),
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/google_icon.svg",
+                                  height: 22.h,
+                                  width: 22.w,
                                 ),
-                              ),
-                              SizedBox(height: 15.h),
-                            ],
+                                SizedBox(width: 10.w),
+                                Text(
+                                  "Google",
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

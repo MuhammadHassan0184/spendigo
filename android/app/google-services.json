@@ -12,7 +12,20 @@
           "package_name": "com.example.spendigo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "619374809014-cbv3odf78orn2tflh94d0bdjsh59reio.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spendigo",
+            "certificate_hash": "7b4d9e30edd6b4841da51049f9d3d62c0617af89"
+          }
+        },
+        {
+          "client_id": "619374809014-og0gp7vq7ekbd2jd838gied8beutbt60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAeViywpcPz5FlYPfOsUvPVfs8tisx5aBs"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "619374809014-og0gp7vq7ekbd2jd838gied8beutbt60.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "619374809014-0r9ncdtt14fltbctgm6ememcob5urcc7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.spendigo"
+              }
+            }
+          ]
         }
       }
     }

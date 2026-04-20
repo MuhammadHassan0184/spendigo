@@ -4,6 +4,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -48,6 +49,51 @@ class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
+    }
+  }
+
+  // -----------------------------
+  // GOOGLE SIGN IN
+  // -----------------------------
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+
+      await googleSignIn.signOut(); // important fix for repeated login issues
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      final UserCredential result = await _auth.signInWithCredential(
+        credential,
+      );
+
+      final User? user = result.user;
+
+      if (user != null) {
+        await _firestore.collection("users").doc(user.uid).set({
+          "uid": user.uid,
+          "email": user.email ?? "",
+          "name": user.displayName ?? "",
+          "photo": user.photoURL ?? "",
+          "provider": "google",
+          "createdAt": FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+
+      return user;
+    } catch (e) {
+      print("Google Sign-In Error: $e");
+      return null;
     }
   }
 
