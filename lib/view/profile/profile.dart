@@ -1,15 +1,24 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/route_manager.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileController controller = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +127,11 @@ class ProfileScreen extends StatelessWidget {
                           horizontal: 16,
                           vertical: 12,
                         ),
-                        child: Icon(Icons.logout, color: Colors.white, size: 20),
+                        child: Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
@@ -211,18 +224,24 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 72,
-      height: 72,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey.shade200, width: 2),
-        image: const DecorationImage(
-          image: AssetImage("assets/profile.jpeg"),
-          fit: BoxFit.cover,
+    final controller = Get.find<ProfileController>();
+
+    return Obx(() {
+      return Container(
+        width: 72,
+        height: 72,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.grey.shade200, width: 2),
+          image: DecorationImage(
+            image: controller.image.value != null
+                ? FileImage(controller.image.value!)
+                : const AssetImage("assets/profile.jpeg") as ImageProvider,
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -231,24 +250,28 @@ class _UserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Ali Ahmad',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    final controller = Get.find<ProfileController>();
+
+    return Obx(() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            controller.fullName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          'aliahmad@gmail.com',
-          style: TextStyle(color: Color(0xFFD9D9D9), fontSize: 13),
-        ),
-      ],
-    );
+          const SizedBox(height: 4),
+          Text(
+            controller.email.value,
+            style: const TextStyle(color: Color(0xFFD9D9D9), fontSize: 13),
+          ),
+        ],
+      );
+    });
   }
 }
 
