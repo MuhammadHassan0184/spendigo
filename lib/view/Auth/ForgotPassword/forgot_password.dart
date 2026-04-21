@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/route_manager.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/controller/Auth_controller/forget_password_controller.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
 
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  final controller = Get.put(ForgotPasswordController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,15 +94,20 @@ class ForgotPassword extends StatelessWidget {
 
                         /// EMAIL
                         CustomTextField(
+                          controller: controller.emailController, 
                           label: "Email",
                           hintText: "Enter your email",
                           keyboardType: TextInputType.emailAddress,
                         ),
-
                         SizedBox(height: 20.h),
 
                         /// SIGN IN BUTTON
-                        CustomButton(text: "Reset Password", onPressed: () {Get.back();}),
+                        CustomButton(
+                          text: "Reset Password",
+                          onPressed: () {
+                            controller.sendResetLink();
+                          },
+                        ),
 
                         // SizedBox(height: 20),
                       ],
