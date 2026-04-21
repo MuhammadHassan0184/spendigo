@@ -7,6 +7,7 @@ import 'package:get/route_manager.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
+import 'package:spendigo/services/auth_service.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -18,6 +19,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final AuthService _authService = AuthService();
   final ProfileController controller = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
@@ -101,8 +103,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               // logout Button
               GestureDetector(
-                onTap: () {
-                  Get.offAllNamed(AppRoutesName.signIn);
+                onTap: () async {
+                  await _authService.logout(); // logout from firebase
+                  Get.offAllNamed(
+                    AppRoutesName.signIn,
+                  ); // clear stack & go login
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),

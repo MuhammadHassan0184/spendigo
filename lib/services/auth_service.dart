@@ -102,6 +102,12 @@ class AuthService {
   // -----------------------------
   Future<void> logout() async {
     await _auth.signOut();
+
+    // Also logout from Google
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    if (await googleSignIn.isSignedIn()) {
+      await googleSignIn.signOut();
+    }
   }
 
   // -----------------------------
