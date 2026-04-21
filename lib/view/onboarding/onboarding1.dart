@@ -2,6 +2,7 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:spendigo/config/Colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
@@ -188,7 +189,9 @@ class _Onboarding1State extends State<Onboarding1> {
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.ease,
                           )
-                        : () {
+                        : () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setBool('onboarding_completed', true);
                             Get.offNamed(AppRoutesName.signIn);
                           },
                     style: ElevatedButton.styleFrom(

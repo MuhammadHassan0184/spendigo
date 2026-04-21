@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spendigo/view/onboarding/onboarding1.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spendigo/config/routes/routes_name.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -17,11 +20,28 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const Onboarding1()),
-      );
+      _checkAppState();
     });
+  }
+
+  Future<void> _checkAppState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
+
+    if (!onboardingCompleted) {
+      // First time user, show onboarding
+      Get.offAllNamed(AppRoutesName.onboarding1);
+    } else {
+      // Onboarding completed, check auth
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // User is logged in, go to home
+        Get.offAllNamed(AppRoutesName.mainScreen);
+      } else {
+        // User not logged in, go to sign in
+        Get.offAllNamed(AppRoutesName.signIn);
+      }
+    }
   }
 
   @override
