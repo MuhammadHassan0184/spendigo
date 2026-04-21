@@ -35,7 +35,7 @@ class AppRoutes {
     GetPage(name: AppRoutesName.budgets, page: () => const BudgetsScreen()),
     GetPage(name: AppRoutesName.profile, page: () => const ProfileScreen()),
     GetPage(name: AppRoutesName.profileDetail, page: () => const ProfileDetail()),
-    GetPage(name: AppRoutesName.password, page: () => const PasswordScreen()),
+    GetPage(name: AppRoutesName.password, page: () => PasswordScreen()),
     GetPage(name: AppRoutesName.forgotPassword, page: () => const ForgotPassword()),
     GetPage(name: AppRoutesName.addTransaction, page: () => AddTransaction()),
     GetPage(name: AppRoutesName.createWallet, page: () => CreateWallet()),
