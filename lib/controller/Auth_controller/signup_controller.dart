@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class SignupController extends GetxController {
   final AuthService _authService = AuthService();
@@ -26,22 +27,12 @@ class SignupController extends GetxController {
         email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill all fields",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      showCustomSnackBar("Error", "Please fill all fields", isError: true);
       return;
     }
 
     if (password != confirmPassword) {
-      Get.snackbar(
-        "Error",
-        "Passwords do not match",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      showCustomSnackBar("Error", "Passwords do not match", isError: true);
       return;
     }
 
@@ -58,12 +49,7 @@ class SignupController extends GetxController {
     } catch (e) {
       isLoading.value = false;
 
-      Get.snackbar(
-        "Error",
-        e.toString(),
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      showCustomSnackBar("Error", e.toString(), isError: true);
     }
   }
 }

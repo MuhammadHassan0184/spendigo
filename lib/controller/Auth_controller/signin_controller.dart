@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class SigninController extends GetxController {
   final AuthService _authService = AuthService();
@@ -17,12 +18,7 @@ class SigninController extends GetxController {
     String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter email and password",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      showCustomSnackBar("Error", "Please enter email and password", isError: true);
       return;
     }
 
@@ -34,24 +30,14 @@ class SigninController extends GetxController {
       isLoading.value = false;
 
       if (userCredential.user != null) {
-        Get.snackbar(
-          "Success",
-          "Welcome back ${userCredential.user!.email}",
-          backgroundColor: AppColors.primary,
-          colorText: Colors.white,
-        );
+        showCustomSnackBar("Success", "Welcome back ${userCredential.user!.email}");
 
         Get.offAllNamed(AppRoutesName.mainScreen);
       }
     } catch (e) {
       isLoading.value = false;
 
-      Get.snackbar(
-        "Error",
-        e.toString(),
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      showCustomSnackBar("Error", e.toString(), isError: true);
     }
   }
 }

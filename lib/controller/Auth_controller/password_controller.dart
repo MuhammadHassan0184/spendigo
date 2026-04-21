@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class PasswordController extends GetxController {
   final currentPasswordController = TextEditingController();
@@ -16,12 +17,12 @@ class PasswordController extends GetxController {
     final confirm = confirmPasswordController.text.trim();
 
     if (currentPassword.isEmpty || newPassword.isEmpty || confirm.isEmpty) {
-      Get.snackbar("Error", "Please fill all fields");
+      showCustomSnackBar("Error", "Please fill all fields", isError: true);
       return;
     }
 
     if (newPassword != confirm) {
-      Get.snackbar("Error", "Passwords do not match");
+      showCustomSnackBar("Error", "Passwords do not match", isError: true);
       return;
     }
 
@@ -45,7 +46,7 @@ class PasswordController extends GetxController {
 
       isLoading.value = false;
 
-      Get.snackbar("Success", "Password updated successfully");
+      showCustomSnackBar("Success", "Password updated successfully");
 
       // 🔐 STEP 3: Force logout (important security step)
       await FirebaseAuth.instance.signOut();
@@ -55,7 +56,7 @@ class PasswordController extends GetxController {
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
 
-      Get.snackbar("Error", e.message ?? "Authentication failed");
+      showCustomSnackBar("Error", e.message ?? "Authentication failed", isError: true);
     }
   }
 }

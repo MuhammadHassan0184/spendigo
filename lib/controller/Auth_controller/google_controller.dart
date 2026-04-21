@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/services/auth_service.dart';
 import 'package:spendigo/view/DashBoard/main_screen.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class GoogleLoginController {
   final AuthService _authService = AuthService();
@@ -17,13 +18,7 @@ class GoogleLoginController {
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: AppColors.primary,
-          content: const Text("Google Sign-In canceled or failed"),
-        ),
-      );
+      showCustomSnackBar("Error", "Google Sign-In canceled or failed", isError: true);
     }
   }
 }

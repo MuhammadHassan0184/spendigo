@@ -3,6 +3,7 @@ import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ReportFeedback extends StatefulWidget {
@@ -24,24 +25,14 @@ class _ReportFeedbackState extends State<ReportFeedback> {
 
     // ✅ Validation
     if (name.isEmpty || email.isEmpty || note.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill all fields"),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      showCustomSnackBar("Error", "Please fill all fields", isError: true);
       return;
     }
 
     // ✅ Email format check
     final emailRegex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
     if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Enter a valid email address"),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      showCustomSnackBar("Error", "Enter a valid email address", isError: true);
       return;
     }
 
@@ -57,13 +48,7 @@ class _ReportFeedbackState extends State<ReportFeedback> {
       await launchUrl(emailUri, mode: LaunchMode.externalApplication);
     } catch (e) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Something went wrong"),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      showCustomSnackBar("Error", "Something went wrong", isError: true);
     }
   }
 

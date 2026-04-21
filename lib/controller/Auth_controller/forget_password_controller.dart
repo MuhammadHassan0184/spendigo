@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class ForgotPasswordController extends GetxController {
   TextEditingController emailController = TextEditingController();
@@ -11,16 +12,7 @@ class ForgotPasswordController extends GetxController {
 
   Future<void> sendResetLink() async {
     if (emailController.text.trim().isEmpty) {
-      Get.snackbar(
-        "Missing Email",
-        "Please enter your email",
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.all(12),
-        borderRadius: 12,
-        backgroundColor: AppColors.primary,
-        colorText: AppColors.white,
-        icon: Icon(Icons.info_outline, color: AppColors.primary),
-      );
+      showCustomSnackBar("Missing Email", "Please enter your email", isError: true);
       return;
     }
 
@@ -95,17 +87,7 @@ class ForgotPasswordController extends GetxController {
     } on FirebaseAuthException catch (e) {
       loading.value = false;
 
-      Get.snackbar(
-        "Error",
-        e.message ?? "Something went wrong",
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.all(12),
-        borderRadius: 12,
-        backgroundColor: AppColors.primary.withOpacity(0.1),
-        colorText: AppColors.white,
-        icon: Icon(Icons.error_outline, color: AppColors.primary),
-        duration: const Duration(seconds: 3),
-      );
+      showCustomSnackBar("Error", e.message ?? "Something went wrong", isError: true);
     }
   }
 }
