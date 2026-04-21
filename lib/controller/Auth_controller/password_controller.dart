@@ -1,36 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 
 class PasswordController extends GetxController {
+  final currentPasswordController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   RxBool isLoading = false.obs;
 
   Future<void> updatePassword() async {
-    final password = passwordController.text.trim();
+    final currentPassword = currentPasswordController.text.trim();
+    final newPassword = passwordController.text.trim();
     final confirm = confirmPasswordController.text.trim();
 
-    if (password.isEmpty || confirm.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please fill all fields",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+    if (currentPassword.isEmpty || newPassword.isEmpty || confirm.isEmpty) {
+      Get.snackbar("Error", "Please fill all fields");
       return;
     }
 
-    if (password != confirm) {
-      Get.snackbar(
-        "Error",
-        "Passwords do not match",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+    if (newPassword != confirm) {
+      Get.snackbar("Error", "Passwords do not match");
       return;
     }
 
@@ -39,30 +30,32 @@ class PasswordController extends GetxController {
 
       final user = FirebaseAuth.instance.currentUser;
 
-      if (user != null) {
-        await user.updatePassword(password);
-      }
+      if (user == null || user.email == null) return;
+
+      // 🔐 STEP 1: Re-authenticate user (BANKING SECURITY)
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      // 🔐 STEP 2: Update password
+      await user.updatePassword(newPassword);
 
       isLoading.value = false;
 
-      Get.snackbar(
-        "Success",
-        "Password updated successfully",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Success", "Password updated successfully");
 
-      // ✅ NAVIGATE TO PROFILE SCREEN
-      Get.offAllNamed(AppRoutesName.profile);
-    } catch (e) {
+      // 🔐 STEP 3: Force logout (important security step)
+      await FirebaseAuth.instance.signOut();
+
+      // 🔐 STEP 4: Go to login screen
+      Get.offAllNamed(AppRoutesName.signIn);
+    } on FirebaseAuthException catch (e) {
       isLoading.value = false;
 
-      Get.snackbar(
-        "Error",
-        "Please login again to update password",
-        backgroundColor: AppColors.primary,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Error", e.message ?? "Authentication failed");
     }
   }
 }

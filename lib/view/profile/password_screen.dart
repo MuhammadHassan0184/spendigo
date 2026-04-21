@@ -23,6 +23,13 @@ class PasswordScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
+              SizedBox(height: 10),
+              CustomTextField(
+                label: "Current Password",
+                hintText: "Enter current password",
+                isPassword: true,
+                controller: controller.currentPasswordController,
+              ),
               const SizedBox(height: 10),
 
               CustomTextField(
