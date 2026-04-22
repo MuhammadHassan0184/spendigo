@@ -1,32 +1,16 @@
-// ignore_for_file: use_build_context_synchronously
+// // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/material.dart';
-import 'package:spendigo/config/colors.dart';
-import 'package:spendigo/services/auth_service.dart';
-import 'package:spendigo/view/DashBoard/main_screen.dart';
-import 'package:spendigo/widgets/custom_snackbar.dart';
-
-class GoogleLoginController {
-  final AuthService _authService = AuthService();
-
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final user = await _authService.signInWithGoogle();
-
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => MainScreen()),
-      );
-    } else {
-      showCustomSnackBar("Error", "Google Sign-In canceled or failed", isError: true);
-    }
-  }
-}
+// import 'package:flutter/material.dart';
+// import 'package:spendigo/config/colors.dart';
+// import 'package:spendigo/services/auth_service.dart';
+// import 'package:spendigo/view/DashBoard/main_screen.dart';
+// import 'package:spendigo/widgets/custom_snackbar.dart';
 
 // class GoogleLoginController {
-//   /// Handles Google Sign-In
+//   final AuthService _authService = AuthService();
+
 //   Future<void> signInWithGoogle(BuildContext context) async {
-//     final user = await AuthService().signInWithGoogle();
+//     final user = await _authService.signInWithGoogle();
 
 //     if (user != null) {
 //       Navigator.pushReplacement(
@@ -34,37 +18,30 @@ class GoogleLoginController {
 //         MaterialPageRoute(builder: (_) => MainScreen()),
 //       );
 //     } else {
-//       // ScaffoldMessenger.of(context).showSnackBar(
-//       //   const SnackBar(content: Text("Google Sign-In canceled or failed")),
-//       // );
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           behavior: SnackBarBehavior.floating,
-//           backgroundColor: AppColors.primary,
-//           elevation: 8,
-//           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(16),
-//           ),
-//           content: Row(
-//             children: [
-//               const Icon(Icons.error_outline, color: Colors.white),
-//               const SizedBox(width: 12),
-//               Expanded(
-//                 child: Text(
-//                   "Google Sign-In canceled or failed",
-//                   style: const TextStyle(
-//                     color: Colors.white,
-//                     fontSize: 16,
-//                     fontWeight: FontWeight.w500,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//           duration: const Duration(seconds: 3),
-//         ),
-//       );
+//       showCustomSnackBar("Error", "Google Sign-In canceled or failed", isError: true);
 //     }
 //   }
 // }
+
+import 'package:get/get.dart';
+import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/widgets/custom_snackbar.dart';
+
+class GoogleLoginController {
+  final AuthService _authService = AuthService();
+
+  Future<void> signInWithGoogle() async {
+  final user = await _authService.signInWithGoogle();
+
+  if (user != null) {
+    Get.offAllNamed(AppRoutesName.mainScreen);
+  } else {
+    showCustomSnackBar(
+      "Error",
+      "Google Sign-In canceled or failed",
+      isError: true,
+    );
+  }
+}
+}

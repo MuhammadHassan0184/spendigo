@@ -203,7 +203,8 @@ class _SignInState extends State<SignIn> {
                         /// GOOGLE BUTTON
                         GestureDetector(
                           onTap: () {
-                            googleController.signInWithGoogle(context);
+                            // googleController.signInWithGoogle(context);
+                            googleController.signInWithGoogle();
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 14.h),
