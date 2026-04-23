@@ -32,7 +32,10 @@ class TransactionTile extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: SvgPicture.asset(iconPath),
+        child: SvgPicture.asset(
+          iconPath,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        ),
       ),
 
       title: Text(

@@ -7,6 +7,7 @@ import 'package:spendigo/view/Auth/sign_up.dart';
 import 'package:spendigo/view/DashBoard/add_transaction.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/DashBoard/main_screen.dart';
+import 'package:spendigo/view/DashBoard/transaction_history.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/budgets/budget_screen.dart';
 import 'package:spendigo/view/budgets/create_budget.dart';
@@ -38,6 +39,7 @@ class AppRoutes {
     GetPage(name: AppRoutesName.password, page: () => PasswordScreen()),
     GetPage(name: AppRoutesName.forgotPassword, page: () => const ForgotPassword()),
     GetPage(name: AppRoutesName.addTransaction, page: () => AddTransaction()),
+    GetPage(name: AppRoutesName.transactionHistory, page: () => TransactionHistory()),
     GetPage(name: AppRoutesName.createWallet, page: () => CreateWallet()),
     GetPage(name: AppRoutesName.createBudget, page: () => CreateBudget()),
     GetPage(name: AppRoutesName.reportFeedback, page: () => ReportFeedback()),

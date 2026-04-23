@@ -14,8 +14,6 @@ class AddTransaction extends StatelessWidget {
     AddTransactionController(),
   );
 
-  final TextEditingController noteController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +60,11 @@ class AddTransaction extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "How much?",
-                      style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
@@ -70,12 +72,23 @@ class AddTransaction extends StatelessWidget {
 
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "\$0",
+                    child: TextField(
+                      controller: controller.amountController,
+                      keyboardType: TextInputType.number,
                       style: TextStyle(
                         fontSize: 48,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "0",
+                        hintStyle: TextStyle(color: Colors.white54),
+                        prefixText: "\$ ",
+                        prefixStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 48,
+                        ),
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
@@ -89,32 +102,55 @@ class AddTransaction extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(20),
               constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
               child: Column(
                 children: [
-                  _buildDropdown("Category", controller.category.value, (val) {
-                    controller.category.value = val;
-                  }),
+                  Obx(
+                    () => _buildDropdown(
+                      "Category",
+                      controller.category.value,
+                      controller.isIncome.value
+                          ? controller.incomeCategories
+                          : controller.expenseCategories,
+                      (val) {
+                        controller.category.value = val;
+                      },
+                    ),
+                  ),
 
-                  _buildDropdown("Wallet", controller.wallet.value, (val) {
-                    controller.wallet.value = val;
-                  }),
+                  _buildDropdown(
+                    "Wallet",
+                    controller.wallet.value,
+                    controller.wallets,
+                    (val) {
+                      controller.wallet.value = val;
+                    },
+                  ),
 
-                  _buildDropdown("Budget", controller.budget.value, (val) {
-                    controller.budget.value = val;
-                  }),
+                  _buildDropdown(
+                    "Budget",
+                    controller.budget.value,
+                    controller.budgets,
+                    (val) {
+                      controller.budget.value = val;
+                    },
+                  ),
 
                   SizedBox(height: 15),
 
-                  CustomTextField(label: "Note", hintText: "Enter here"),
+                  CustomTextField(
+                    label: "Note",
+                    hintText: "Enter here",
+                    controller: controller.noteController,
+                  ),
 
                   SizedBox(height: 15),
 
@@ -180,17 +216,7 @@ class AddTransaction extends StatelessWidget {
                     child: Obx(
                       () => ElevatedButton(
                         onPressed: () {
-                          String type = controller.isIncome.value
-                              ? "Income"
-                              : "Expense";
-
-                          print("Type: $type");
-                          print("Category: ${controller.category.value}");
-                          print("Wallet: ${controller.wallet.value}");
-                          print("Budget: ${controller.budget.value}");
-                          print("Note: ${noteController.text}");
-                          print("Repeat: ${controller.repeat.value}");
-                          print("Repeat Type: ${controller.repeatType.value}");
+                          controller.addTransaction();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
@@ -266,6 +292,7 @@ class AddTransaction extends StatelessWidget {
   Widget _buildDropdown(
     String label,
     String? value,
+    List<String> items,
     Function(String?) onChanged,
   ) {
     return Column(
@@ -291,11 +318,9 @@ class AddTransaction extends StatelessWidget {
             ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
           ),
-          items: [
-            "One",
-            "Two",
-            "Three",
-          ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          items: items
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
           onChanged: onChanged,
         ),
       ],
