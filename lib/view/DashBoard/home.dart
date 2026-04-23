@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
@@ -11,6 +12,7 @@ class Home extends StatelessWidget {
   Home({super.key});
 
   final controller = Get.put(AddTransactionController(), permanent: true);
+  final profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +67,16 @@ class Home extends StatelessWidget {
 
                                   SizedBox(height: 4),
 
-                                  Text(
-                                    "Awais Ansari",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                                  Obx(
+                                    () => Text(
+                                      profileController.fullName.isEmpty
+                                          ? "User"
+                                          : profileController.fullName,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
