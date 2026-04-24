@@ -12,9 +12,10 @@ class CreateBudget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CreateBudgetController());
+    final controller = Get.find<CreateBudgetController>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
         title: "Create Budget",
@@ -26,170 +27,208 @@ class CreateBudget extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            /// 🔹 Amount Display
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Obx(
-                    () => Column(
-                      mainAxisSize: MainAxisSize.min, // ✅ IMPORTANT FIX
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'How much do you want to spend?',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '\$${controller.budgetAmount.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.w700,
-                            height: 1.1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            /// 🔹 Bottom Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// 🔹 Category Dropdown
-                  const Text(
-                    'Category',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 10),
-
-                  Obx(
-                    () => Container(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(
+                  children: [
+                    /// 🔹 Amount Display
+                    Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
+                        horizontal: 24,
+                        vertical: 32,
                       ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFE0E0E0)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          hint: const Text('Select'),
-                          value: controller.selectedCategory.value,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: controller.categories
-                              .map(
-                                (cat) => DropdownMenuItem(
-                                  value: cat,
-                                  child: Text(cat),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'How much do you want to spend?',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '\$ ',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.1,
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (val) =>
-                              controller.selectedCategory.value = val,
-                        ),
+                              ),
+                              Expanded(
+                                child: TextField(
+                                  controller: controller.amountController,
+                                  keyboardType: TextInputType.number,
+                                  cursorColor: Colors.white,
+                                  onChanged: (val) =>
+                                      controller.updateSliderFromAmount(val),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.1,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 20),
+                    /// 🔹 Bottom Card
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 28,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// 🔹 Category Dropdown
+                          const Text(
+                            'Category',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
 
-                  /// 🔹 Switch
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Receive Alert',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                          Obx(
+                            () => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFE0E0E0),
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  hint: const Text('Select'),
+                                  value: controller.selectedCategory.value,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                  items: controller.categories
+                                      .map(
+                                        (cat) => DropdownMenuItem(
+                                          value: cat,
+                                          child: Text(cat),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (val) =>
+                                      controller.selectedCategory.value = val,
+                                ),
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Receive alert when it reaches\nsome point.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF9E9E9E),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          /// 🔹 Switch
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Receive Alert',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'Receive alert when it reaches\nsome point.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF9E9E9E),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Obx(
+                                () => Switch(
+                                  value: controller.receiveAlert.value,
+                                  onChanged: (val) =>
+                                      controller.receiveAlert.value = val,
+                                  activeColor: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          /// 🔹 Slider
+                          Obx(
+                            () => SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColors.primary,
+                                inactiveTrackColor: const Color(0xFFE0E0E0),
+                                thumbColor: Colors.white,
+                                thumbShape: _BudgetThumbShape(
+                                  label:
+                                      '${controller.sliderValue.value.toInt()}%',
+                                ),
+                                overlayColor: const Color(
+                                  0xFF2F7E79,
+                                ).withOpacity(0.15),
+                                trackHeight: 6,
+                              ),
+                              child: Slider(
+                                min: 0,
+                                max: 100,
+                                value: controller.sliderValue.value,
+                                onChanged: (val) =>
+                                    controller.sliderValue.value = val,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Obx(
-                        () => Switch(
-                          value: controller.receiveAlert.value,
-                          onChanged: (val) =>
-                              controller.receiveAlert.value = val,
-                          activeColor: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+                          ),
 
-                  const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
-                  /// 🔹 Slider
-                  Obx(
-                    () => SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        activeTrackColor: AppColors.primary,
-                        inactiveTrackColor: const Color(0xFFE0E0E0),
-                        thumbColor: Colors.white,
-                        thumbShape: _BudgetThumbShape(
-                          label: '${controller.sliderValue.value.toInt()}%',
-                        ),
-                        overlayColor: const Color(0xFF2F7E79).withOpacity(0.15),
-                        trackHeight: 6,
-                      ),
-                      child: Slider(
-                        min: 0,
-                        max: 100,
-                        value: controller.sliderValue.value,
-                        onChanged: (val) => controller.sliderValue.value = val,
+                          /// 🔹 Button
+                          CustomButton(
+                            text: "Create Budget",
+                            onPressed: () {
+                              controller.createBudget();
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// 🔹 Button
-                  CustomButton(
-                    text: "Create Budget",
-                    onPressed: () {
-                      // your logic
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

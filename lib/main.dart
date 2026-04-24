@@ -10,6 +10,7 @@ import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
+import 'package:spendigo/controller/budget_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,5 +66,6 @@ class GlobalBinding extends Bindings {
   void dependencies() {
     Get.put(CreateWalletController(), permanent: true);
     Get.put(AddTransactionController(), permanent: true);
+    Get.put(CreateBudgetController(), permanent: true);
   }
 }
