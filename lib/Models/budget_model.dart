@@ -13,5 +13,21 @@ class BudgetModel {
     required this.alertPercentage,
   });
 
+  BudgetModel copyWith({
+    String? category,
+    double? total,
+    double? spent,
+    bool? receiveAlert,
+    double? alertPercentage,
+  }) {
+    return BudgetModel(
+      category: category ?? this.category,
+      total: total ?? this.total,
+      spent: spent ?? this.spent,
+      receiveAlert: receiveAlert ?? this.receiveAlert,
+      alertPercentage: alertPercentage ?? this.alertPercentage,
+    );
+  }
+
   double get remaining => total - spent;
 }

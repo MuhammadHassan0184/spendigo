@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
+import 'package:spendigo/controller/budget_controller.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class AddTransactionController extends GetxController {
@@ -51,7 +52,13 @@ class AddTransactionController extends GetxController {
     return walletController.wallets.map((w) => w.name).toList();
   }
 
-  final List<String> budgets = ["Monthly", "Weekly", "Travel", "Custom"];
+  List<String> get availableBudgets {
+    final budgetController = Get.find<CreateBudgetController>();
+    if (budgetController.budgets.isEmpty) {
+      return ["Monthly", "Weekly", "Travel", "Custom"];
+    }
+    return budgetController.budgets.map((b) => b.category).toList();
+  }
 
   // Observable list of transactions
   var transactions = <TransactionModel>[].obs;
@@ -70,8 +77,10 @@ class AddTransactionController extends GetxController {
   }
 
   void addTransaction() {
-    if (amountController.text.isEmpty) {
-      showCustomSnackBar("Error", "Please enter an amount", isError: true);
+    final amount = double.tryParse(amountController.text) ?? 0.0;
+
+    if (amount <= 0) {
+      showCustomSnackBar("Error", "Please enter a valid amount", isError: true);
       return;
     }
 
@@ -86,11 +95,33 @@ class AddTransactionController extends GetxController {
       wallet: wallet.value ?? "Default",
       budget: budget.value ?? "Default",
       note: noteController.text,
-      amount: double.tryParse(amountController.text) ?? 0.0,
+      amount: amount,
       date: DateTime.now(),
     );
 
+    // 1. Add to transactions list
     transactions.add(transaction);
+
+    // 2. Update Wallet Balance
+    final walletController = Get.find<CreateWalletController>();
+    final selectedWalletIndex = walletController.wallets.indexWhere((w) => w.name == transaction.wallet);
+    if (selectedWalletIndex != -1) {
+      final oldWallet = walletController.wallets[selectedWalletIndex];
+      final newBalance = transaction.type == "Income" 
+          ? oldWallet.balance + transaction.amount 
+          : oldWallet.balance - transaction.amount;
+      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(balance: newBalance);
+    }
+
+    // 3. Update Budget Spent (only for expenses)
+    if (transaction.type == "Expense") {
+      final budgetController = Get.find<CreateBudgetController>();
+      final selectedBudgetIndex = budgetController.budgets.indexWhere((b) => b.category == transaction.budget);
+      if (selectedBudgetIndex != -1) {
+        final oldBudget = budgetController.budgets[selectedBudgetIndex];
+        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(spent: oldBudget.spent + transaction.amount);
+      }
+    }
 
     // Clear fields
     amountController.clear();
@@ -111,7 +142,10 @@ class AddTransactionController extends GetxController {
       .where((t) => t.type == "Expense")
       .fold(0.0, (sum, t) => sum + t.amount);
 
-  double get totalBalance => totalIncome - totalExpense;
+  double get totalBalance {
+    final walletController = Get.find<CreateWalletController>();
+    return walletController.totalWealth;
+  }
 
   String getIconPath(String category) {
     switch (category) {

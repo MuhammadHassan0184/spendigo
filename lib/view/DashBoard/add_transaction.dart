@@ -135,13 +135,15 @@ class AddTransaction extends StatelessWidget {
                     },
                   ),
 
-                  _buildDropdown(
-                    "Budget",
-                    controller.budget.value,
-                    controller.budgets,
-                    (val) {
-                      controller.budget.value = val;
-                    },
+                  Obx(
+                    () => _buildDropdown(
+                      "Budget",
+                      controller.budget.value,
+                      controller.availableBudgets,
+                      (val) {
+                        controller.budget.value = val;
+                      },
+                    ),
                   ),
 
                   SizedBox(height: 15),

@@ -2,7 +2,6 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spendigo/config/routes/routes.dart';
 import 'package:spendigo/firebase_options.dart';
@@ -17,7 +16,7 @@ void main() async {
 
   // await NotificationService.init();
   print("Starting Firebase init...");
-  
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

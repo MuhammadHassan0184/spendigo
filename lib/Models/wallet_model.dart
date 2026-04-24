@@ -10,4 +10,18 @@ class WalletModel {
     required this.receiveAlert,
     required this.alertPercentage,
   });
+
+  WalletModel copyWith({
+    String? name,
+    double? balance,
+    bool? receiveAlert,
+    double? alertPercentage,
+  }) {
+    return WalletModel(
+      name: name ?? this.name,
+      balance: balance ?? this.balance,
+      receiveAlert: receiveAlert ?? this.receiveAlert,
+      alertPercentage: alertPercentage ?? this.alertPercentage,
+    );
+  }
 }
