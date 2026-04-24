@@ -11,7 +11,7 @@ import 'package:spendigo/widgets/home_transaction_tile.dart';
 class Home extends StatelessWidget {
   Home({super.key});
 
-  final controller = Get.put(AddTransactionController(), permanent: true);
+  final controller = Get.find<AddTransactionController>();
   final profileController = Get.put(ProfileController());
 
   @override

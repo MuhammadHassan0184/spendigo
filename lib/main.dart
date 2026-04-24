@@ -7,6 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spendigo/config/routes/routes.dart';
 import 'package:spendigo/firebase_options.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
+import 'package:get/get.dart';
+import 'package:spendigo/controller/wallet_controller.dart';
+import 'package:spendigo/controller/transaction_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +53,17 @@ class MyApp extends StatelessWidget {
 
           getPages: AppRoutes.routes(),
           home: const SplashScreen(),
+          initialBinding: GlobalBinding(),
         );
       },
     );
+  }
+}
+
+class GlobalBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(CreateWalletController(), permanent: true);
+    Get.put(AddTransactionController(), permanent: true);
   }
 }

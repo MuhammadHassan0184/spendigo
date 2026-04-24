@@ -40,29 +40,53 @@ class CreateWallet extends StatelessWidget {
                         horizontal: 24,
                         vertical: 16,
                       ),
-                      child: Obx(() => Column(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Balance',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Balance',
+                                '\$ ',
                                 style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '\$${controller.budgetAmount.toStringAsFixed(0)}',
-                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 48,
                                   fontWeight: FontWeight.w700,
                                   height: 1.1,
                                 ),
                               ),
+                              Expanded(
+                                child: TextField(
+                                  controller: controller.amountController,
+                                  keyboardType: TextInputType.number,
+                                  cursorColor: Colors.white,
+                                  onChanged: (val) => controller.updateSliderFromAmount(val),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.1,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
                             ],
-                          )),
+                          ),
+                        ],
+                      ),
                     ),
 
                     /// 🔹 White Card
@@ -116,39 +140,44 @@ class CreateWallet extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Obx(() => Switch(
-                                    value: controller.receiveAlert.value,
-                                    onChanged: (val) =>
-                                        controller.receiveAlert.value = val,
-                                    activeColor: AppColors.primary,
-                                  )),
+                              Obx(
+                                () => Switch(
+                                  value: controller.receiveAlert.value,
+                                  onChanged: (val) =>
+                                      controller.receiveAlert.value = val,
+                                  activeColor: AppColors.primary,
+                                ),
+                              ),
                             ],
                           ),
 
                           const SizedBox(height: 16),
 
                           /// 🔹 Slider
-                          Obx(() => SliderTheme(
-                                data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: AppColors.primary,
-                                  inactiveTrackColor: const Color(0xFFE0E0E0),
-                                  thumbColor: Colors.white,
-                                  thumbShape: _BudgetThumbShape(
-                                    label:
-                                        '${controller.sliderValue.value.toInt()}%',
-                                  ),
-                                  overlayColor: const Color(0xFF2F7E79)
-                                      .withOpacity(0.15),
-                                  trackHeight: 6,
+                          Obx(
+                            () => SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColors.primary,
+                                inactiveTrackColor: const Color(0xFFE0E0E0),
+                                thumbColor: Colors.white,
+                                thumbShape: _BudgetThumbShape(
+                                  label:
+                                      '${controller.sliderValue.value.toInt()}%',
                                 ),
-                                child: Slider(
-                                  min: 0,
-                                  max: 100,
-                                  value: controller.sliderValue.value,
-                                  onChanged: (val) =>
-                                      controller.sliderValue.value = val,
-                                ),
-                              )),
+                                overlayColor: const Color(
+                                  0xFF2F7E79,
+                                ).withOpacity(0.15),
+                                trackHeight: 6,
+                              ),
+                              child: Slider(
+                                min: 0,
+                                max: 100,
+                                value: controller.sliderValue.value,
+                                onChanged: (val) =>
+                                    controller.sliderValue.value = val,
+                              ),
+                            ),
+                          ),
 
                           const SizedBox(height: 20),
 
@@ -156,7 +185,7 @@ class CreateWallet extends StatelessWidget {
                           CustomButton(
                             text: "Create Wallet",
                             onPressed: () {
-                              // your logic
+                              controller.createWallet();
                             },
                           ),
                         ],
@@ -179,8 +208,7 @@ class _BudgetThumbShape extends SliderComponentShape {
   const _BudgetThumbShape({required this.label});
 
   @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) =>
-      const Size(56, 28);
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size(56, 28);
 
   @override
   void paint(

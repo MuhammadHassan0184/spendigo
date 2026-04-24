@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class AddTransactionController extends GetxController {
@@ -35,12 +36,20 @@ class AddTransactionController extends GetxController {
     "Other Expense",
   ];
 
-  final List<String> wallets = [
+  final List<String> defaultWallets = [
     "Cash",
     "Bank Account",
     "Credit Card",
     "Paypal",
   ];
+
+  List<String> get wallets {
+    final walletController = Get.find<CreateWalletController>();
+    if (walletController.wallets.isEmpty) {
+      return defaultWallets;
+    }
+    return walletController.wallets.map((w) => w.name).toList();
+  }
 
   final List<String> budgets = ["Monthly", "Weekly", "Travel", "Custom"];
 
