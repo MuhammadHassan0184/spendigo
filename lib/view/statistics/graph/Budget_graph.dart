@@ -71,7 +71,7 @@ class BudgetVsActualChart extends StatelessWidget {
                   barTouchData: BarTouchData(
                     enabled: true,
                     touchTooltipData: BarTouchTooltipData(
-                      getTooltipColor: (_) => Colors.black,
+                      getTooltipColor: (_) => AppColors.black,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
                           "Rs. ${rod.toY.toStringAsFixed(0)}",
@@ -143,7 +143,7 @@ class BudgetVsActualChart extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                legend(Colors.black, "Budget"),
+                legend(AppColors.black, "Budget"),
                 const SizedBox(width: 20),
                 legend(AppColors.primary, "Actual Spending"),
               ],
@@ -162,7 +162,7 @@ class BudgetVsActualChart extends StatelessWidget {
           toY: budget,
           width: 14,
           borderRadius: BorderRadius.circular(4),
-          color: Colors.black,
+          color: AppColors.black,
         ),
         BarChartRodData(
           toY: actual,

@@ -59,7 +59,7 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                   children: [
                     legend(AppColors.primary, "Income"),
                     const SizedBox(width: 16),
-                    legend(Colors.black, "Expense"),
+                    legend(AppColors.black, "Expense"),
                   ],
                 ),
               ],
@@ -121,7 +121,7 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                     LineChartBarData(
                       isCurved: true,
                       curveSmoothness: 0.35,
-                      color: Colors.black,
+                      color: AppColors.black,
                       barWidth: 2,
                       dotData: FlDotData(
                         show: true,
@@ -130,7 +130,7 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                               radius: 4,
                               color: Colors.white,
                               strokeWidth: 2,
-                              strokeColor: Colors.black,
+                              strokeColor: AppColors.black,
                             ),
                       ),
                       spots: List.generate(6, (i) => FlSpot(i.toDouble(), expenseData[i])),
@@ -159,7 +159,7 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                   ],
                   lineTouchData: LineTouchData(
                     touchTooltipData: LineTouchTooltipData(
-                      getTooltipColor: (_) => Colors.black,
+                      getTooltipColor: (_) => AppColors.black,
                       getTooltipItems: (spots) {
                         return spots.map((spot) {
                           return LineTooltipItem(

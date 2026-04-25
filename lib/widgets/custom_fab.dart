@@ -104,7 +104,7 @@ class FABPainter extends CustomPainter {
         end: Alignment.bottomRight,
         colors: [
           color,
-          Color.lerp(color, Colors.black, 0.1)!, // Slightly darker at bottom
+          Color.lerp(color, AppColors.black, 0.1)!, // Slightly darker at bottom
         ],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.fill

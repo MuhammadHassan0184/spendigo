@@ -108,10 +108,10 @@ class _BudgetCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   category,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: AppColors.black.withOpacity(0.87),
                   ),
                 ),
               ],

@@ -40,7 +40,7 @@ class CustomBottomNav extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.09)),
+            BoxShadow(blurRadius: 20, color: AppColors.black.withOpacity(.09)),
           ],
         ),
         child: Row(
@@ -57,7 +57,7 @@ class CustomBottomNav extends StatelessWidget {
                     height: 21,
                     color: selectedIndex == index
                         ? AppColors.primary
-                        : Colors.black,
+                        : AppColors.black,
                   ),
                   const SizedBox(height: 4),
                   Text(

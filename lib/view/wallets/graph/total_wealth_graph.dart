@@ -130,7 +130,7 @@ class TotalWealthChart extends StatelessWidget {
             LineChartBarData(
               spots: spots,
               isCurved: false, // Original was not curved
-              color: Colors.black, // Original was black
+              color: AppColors.black, // Original was black
               barWidth: 2,
               dotData: FlDotData(
                 show: true,
@@ -139,14 +139,14 @@ class TotalWealthChart extends StatelessWidget {
                       radius: width * 0.012,
                       color: Colors.white,
                       strokeWidth: 2,
-                      strokeColor: Colors.black, // Original was black
+                      strokeColor: AppColors.black, // Original was black
                     ),
               ),
             ),
           ],
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (_) => Colors.black,
+              getTooltipColor: (_) => AppColors.black,
               getTooltipItems: (spots) {
                 return spots.map((spot) {
                   return LineTooltipItem(

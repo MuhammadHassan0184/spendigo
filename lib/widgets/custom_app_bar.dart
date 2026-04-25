@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spendigo/config/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -31,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
                 size: 20,
-                color: arrowColor ?? Colors.black,
+                color: arrowColor ?? AppColors.black,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -43,7 +44,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: TextStyle(
           fontWeight: FontWeight.w500,
-          color: titleColor ?? Colors.black,
+          color: titleColor ?? AppColors.black,
           fontSize: 21,
         ),
       ),

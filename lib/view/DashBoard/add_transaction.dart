@@ -388,7 +388,7 @@ class AddTransaction extends StatelessWidget {
                               style: TextStyle(
                                 color: isSelected
                                     ? AppColors.primary
-                                    : Colors.black,
+                                    : AppColors.black,
                               ),
                             ),
                             if (isSelected)
