@@ -40,22 +40,13 @@ class WalletTile extends StatelessWidget {
         ),
         title: Text(
           amount,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: AppColors.grey,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.grey),
         ),
-        trailing: Icon(
-          Icons.keyboard_arrow_right,
-          color: AppColors.grey,
-        ),
+        trailing: Icon(Icons.keyboard_arrow_right, color: AppColors.grey),
       ),
     );
   }

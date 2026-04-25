@@ -40,7 +40,7 @@ class TransactionTile extends StatelessWidget {
 
       title: Text(
         title,
-        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
       ),
 
       subtitle: Text(subtitle),

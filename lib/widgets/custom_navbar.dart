@@ -67,7 +67,7 @@ class CustomBottomNav extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: selectedIndex == index
                           ? AppColors.primary
-                          : Colors.black,
+                          : AppColors.black,
                     ),
                   ),
                 ],

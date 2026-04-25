@@ -121,10 +121,10 @@ class _BudgetCard extends StatelessWidget {
           // Remaining
           Text(
             'Remaining Rs. ${remaining.toStringAsFixed(0)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
             ),
           ),
           const SizedBox(height: 12),

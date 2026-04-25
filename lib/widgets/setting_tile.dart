@@ -26,19 +26,10 @@ class CustomListTile extends StatelessWidget {
           color: Colors.grey.shade200,
           shape: BoxShape.circle,
         ),
-        child: svgPath != null
-            ? SvgPicture.asset(svgPath!)
-            : null,
+        child: svgPath != null ? SvgPicture.asset(svgPath!) : null,
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: AppColors.primary,
-        size: 25,
-      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      trailing: Icon(Icons.chevron_right, color: AppColors.primary, size: 25),
     );
   }
 }
