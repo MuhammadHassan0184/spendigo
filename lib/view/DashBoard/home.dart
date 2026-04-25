@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
@@ -120,7 +121,7 @@ class Home extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.black.withOpacity(0.26),
+                            color: Colors.black.withOpacity(0.26),
                             blurRadius: 10,
                             offset: Offset(2, 10),
                           ),
@@ -139,7 +140,7 @@ class Home extends StatelessWidget {
                                   fontSize: 14,
                                 ),
                               ),
-                              Icon(Icons.more_horiz, color: Colors.white),
+                              // Icon(Icons.more_horiz, color: Colors.white),
                             ],
                           ),
 
