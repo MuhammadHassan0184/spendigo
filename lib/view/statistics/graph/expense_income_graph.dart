@@ -2,218 +2,183 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
+import 'package:spendigo/controller/transaction_controller.dart';
 
 class ExpenseVsIncomeChart extends StatelessWidget {
   const ExpenseVsIncomeChart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.stroke),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Title + Legend (Responsive)
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runSpacing: 10,
-            children: [
-              const Text(
-                "Expense vs Income",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+    final controller = Get.find<AddTransactionController>();
 
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  legend(AppColors.primary, "Income"),
-                  const SizedBox(width: 16),
-                  legend(Colors.black, "Expense"),
-                ],
-              ),
-            ],
-          ),
+    const monthNames = [
+      "JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
+      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+    ];
 
-          const SizedBox(height: 20),
+    return Obx(() {
+      final incomeData = controller.monthlyIncome;
+      final expenseData = controller.monthlyExpense;
 
-          SizedBox(
-            height: 260,
-            child: LineChart(
-              LineChartData(
-                minX: 0,
-                maxX: 5,
-                minY: 0,
-                maxY: 10,
+      // Calculate max Y for scaling
+      double maxY = 0;
+      for (var val in incomeData) { if (val > maxY) maxY = val; }
+      for (var val in expenseData) { if (val > maxY) maxY = val; }
+      maxY = maxY == 0 ? 100 : maxY * 1.2;
 
-                clipData: FlClipData.all(),
+      // Get month labels for the last 6 months
+      final now = DateTime.now();
+      final months = List.generate(6, (i) {
+        final date = DateTime(now.year, now.month - (5 - i), 1);
+        return monthNames[date.month - 1];
+      });
 
-                /// Grid
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: true,
-                  horizontalInterval: 2,
-                  verticalInterval: 1,
-                  getDrawingHorizontalLine: (value) {
-                    return FlLine(color: AppColors.stroke, strokeWidth: 1);
-                  },
-                  getDrawingVerticalLine: (value) {
-                    return FlLine(color: AppColors.stroke, strokeWidth: 1);
-                  },
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.stroke),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              runSpacing: 10,
+              children: [
+                const Text(
+                  "Expense vs Income",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-
-                borderData: FlBorderData(show: false),
-
-                /// Titles
-                titlesData: FlTitlesData(
-                  /// Left Numbers
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: 2,
-                      reservedSize: 28,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: TextStyle(color: AppColors.grey, fontSize: 12),
-                        );
-                      },
-                    ),
-                  ),
-
-                  /// Bottom Months
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        const months = [
-                          "JAN",
-                          "FEB",
-                          "MAR",
-                          "APR",
-                          "MAY",
-                          "JUN",
-                        ];
-
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            months[value.toInt()],
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-
-                  topTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    legend(AppColors.primary, "Income"),
+                    const SizedBox(width: 16),
+                    legend(Colors.black, "Expense"),
+                  ],
                 ),
-
-                /// Lines
-                lineBarsData: [
-                  /// Expense Line (Black)
-                  LineChartBarData(
-                    isCurved: true,
-                    curveSmoothness: 0.35,
-                    color: Colors.black,
-                    barWidth: 2,
-
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, percent, bar, index) =>
-                          FlDotCirclePainter(
-                            radius: 4,
-                            color: Colors.white,
-                            strokeWidth: 2,
-                            strokeColor: Colors.black,
-                          ),
-                    ),
-
-                    spots: const [
-                      FlSpot(0, 1),
-                      FlSpot(1, 2.6),
-                      FlSpot(2, 4.4),
-                      FlSpot(3, 6.5),
-                      FlSpot(4, 4.7),
-                      FlSpot(5, 8),
-                    ],
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 260,
+              child: LineChart(
+                LineChartData(
+                  minX: 0,
+                  maxX: 5,
+                  minY: 0,
+                  maxY: maxY,
+                  clipData: const FlClipData.all(),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: true,
+                    horizontalInterval: maxY / 5,
+                    verticalInterval: 1,
+                    getDrawingHorizontalLine: (value) =>
+                        FlLine(color: AppColors.stroke, strokeWidth: 1),
+                    getDrawingVerticalLine: (value) =>
+                        FlLine(color: AppColors.stroke, strokeWidth: 1),
                   ),
-
-                  /// Income Line (Green Dashed + Area)
-                  LineChartBarData(
-                    isCurved: true,
-                    curveSmoothness: 0.35,
-                    color: AppColors.primary,
-                    barWidth: 2,
-                    dashArray: [6, 6],
-
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.3),
-                          Colors.transparent,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: maxY / 5,
+                        reservedSize: 35,
+                        getTitlesWidget: (value, _) => Text(
+                          value >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
+                          style: TextStyle(color: AppColors.grey, fontSize: 10),
+                        ),
                       ),
                     ),
-
-                    dotData: FlDotData(show: false),
-
-                    spots: const [
-                      FlSpot(0, 0.5),
-                      FlSpot(1, 1.4),
-                      FlSpot(2, 2.9),
-                      FlSpot(3, 2.1),
-                      FlSpot(4, 5.8),
-                      FlSpot(5, 5.6),
-                    ],
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, _) {
+                          int idx = value.toInt();
+                          if (idx < 0 || idx >= months.length) return const SizedBox();
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              months[idx],
+                              style: TextStyle(color: AppColors.grey, fontSize: 10),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   ),
-                ],
-
-                /// Tooltip
-                lineTouchData: LineTouchData(
-                  enabled: true,
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (touchedSpot) => Colors.black,
-                    getTooltipItems: (spots) {
-                      return spots.map((spot) {
-                        return LineTooltipItem(
-                          "\$${spot.y}",
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        );
-                      }).toList();
-                    },
+                  lineBarsData: [
+                    // Expense Line (Black)
+                    LineChartBarData(
+                      isCurved: true,
+                      curveSmoothness: 0.35,
+                      color: Colors.black,
+                      barWidth: 2,
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, bar, index) =>
+                            FlDotCirclePainter(
+                              radius: 4,
+                              color: Colors.white,
+                              strokeWidth: 2,
+                              strokeColor: Colors.black,
+                            ),
+                      ),
+                      spots: List.generate(6, (i) => FlSpot(i.toDouble(), expenseData[i])),
+                    ),
+                    // Income Line (Green Dashed + Area)
+                    LineChartBarData(
+                      isCurved: true,
+                      curveSmoothness: 0.35,
+                      color: AppColors.primary,
+                      barWidth: 2,
+                      dashArray: [6, 6],
+                      belowBarData: BarAreaData(
+                        show: true,
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary.withOpacity(0.3),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      dotData: const FlDotData(show: false),
+                      spots: List.generate(6, (i) => FlSpot(i.toDouble(), incomeData[i])),
+                    ),
+                  ],
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipColor: (_) => Colors.black,
+                      getTooltipItems: (spots) {
+                        return spots.map((spot) {
+                          return LineTooltipItem(
+                            "Rs. ${spot.y.toStringAsFixed(0)}",
+                            const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          );
+                        }).toList();
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
-  /// Legend Widget
   Widget legend(Color color, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,

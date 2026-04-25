@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/Models/transaction_model.dart';
+import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/budget_controller.dart';
@@ -105,12 +106,22 @@ class AddTransactionController extends GetxController {
     // 2. Update Wallet Balance
     final walletController = Get.find<CreateWalletController>();
     final selectedWalletIndex = walletController.wallets.indexWhere((w) => w.name == transaction.wallet);
+    
     if (selectedWalletIndex != -1) {
       final oldWallet = walletController.wallets[selectedWalletIndex];
       final newBalance = transaction.type == "Income" 
           ? oldWallet.balance + transaction.amount 
           : oldWallet.balance - transaction.amount;
       walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(balance: newBalance);
+    } else {
+      // If no wallet exists with this name, create a new one automatically
+      final newWallet = WalletModel(
+        name: transaction.wallet,
+        balance: transaction.type == "Income" ? transaction.amount : -transaction.amount,
+        receiveAlert: false,
+        alertPercentage: 0,
+      );
+      walletController.wallets.add(newWallet);
     }
 
     // 3. Update Budget Spent (only for expenses)
@@ -145,6 +156,58 @@ class AddTransactionController extends GetxController {
   double get totalBalance {
     final walletController = Get.find<CreateWalletController>();
     return walletController.totalWealth;
+  }
+
+  // Statistics Data Getters
+  List<double> get monthlyIncome {
+    List<double> data = List.filled(6, 0.0);
+    DateTime now = DateTime.now();
+    for (var t in transactions) {
+      if (t.type == "Income") {
+        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        if (monthDiff >= 0 && monthDiff < 6) {
+          data[5 - monthDiff] += t.amount;
+        }
+      }
+    }
+    return data;
+  }
+
+  List<double> get monthlyExpense {
+    List<double> data = List.filled(6, 0.0);
+    DateTime now = DateTime.now();
+    for (var t in transactions) {
+      if (t.type == "Expense") {
+        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        if (monthDiff >= 0 && monthDiff < 6) {
+          data[5 - monthDiff] += t.amount;
+        }
+      }
+    }
+    return data;
+  }
+
+  // Monthly Budget vs Actual (Last 4 months)
+  List<double> get last4MonthsActual {
+    List<double> data = List.filled(4, 0.0);
+    DateTime now = DateTime.now();
+    for (var t in transactions) {
+      if (t.type == "Expense") {
+        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        if (monthDiff >= 0 && monthDiff < 4) {
+          data[3 - monthDiff] += t.amount;
+        }
+      }
+    }
+    return data;
+  }
+
+  List<double> get last4MonthsBudget {
+    final budgetController = Get.find<CreateBudgetController>();
+    double totalBudget = budgetController.budgets.fold(0.0, (sum, b) => sum + b.total);
+    // Since we don't have historical budget data, we use current total budget for current month 
+    // and a simulated/historical average for others, or just the same for simplicity in this demo.
+    return [totalBudget * 0.8, totalBudget * 0.9, totalBudget * 1.1, totalBudget];
   }
 
   String getIconPath(String category) {
