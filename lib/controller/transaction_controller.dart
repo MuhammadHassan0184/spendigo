@@ -105,19 +105,25 @@ class AddTransactionController extends GetxController {
 
     // 2. Update Wallet Balance
     final walletController = Get.find<CreateWalletController>();
-    final selectedWalletIndex = walletController.wallets.indexWhere((w) => w.name == transaction.wallet);
-    
+    final selectedWalletIndex = walletController.wallets.indexWhere(
+      (w) => w.name == transaction.wallet,
+    );
+
     if (selectedWalletIndex != -1) {
       final oldWallet = walletController.wallets[selectedWalletIndex];
-      final newBalance = transaction.type == "Income" 
-          ? oldWallet.balance + transaction.amount 
+      final newBalance = transaction.type == "Income"
+          ? oldWallet.balance + transaction.amount
           : oldWallet.balance - transaction.amount;
-      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(balance: newBalance);
+      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
+        balance: newBalance,
+      );
     } else {
       // If no wallet exists with this name, create a new one automatically
       final newWallet = WalletModel(
         name: transaction.wallet,
-        balance: transaction.type == "Income" ? transaction.amount : -transaction.amount,
+        balance: transaction.type == "Income"
+            ? transaction.amount
+            : -transaction.amount,
         receiveAlert: false,
         alertPercentage: 0,
       );
@@ -127,10 +133,14 @@ class AddTransactionController extends GetxController {
     // 3. Update Budget Spent (only for expenses)
     if (transaction.type == "Expense") {
       final budgetController = Get.find<CreateBudgetController>();
-      final selectedBudgetIndex = budgetController.budgets.indexWhere((b) => b.category == transaction.budget);
+      final selectedBudgetIndex = budgetController.budgets.indexWhere(
+        (b) => b.category == transaction.budget,
+      );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(spent: oldBudget.spent + transaction.amount);
+        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
+          spent: oldBudget.spent + transaction.amount,
+        );
       }
     }
 
@@ -164,7 +174,8 @@ class AddTransactionController extends GetxController {
     DateTime now = DateTime.now();
     for (var t in transactions) {
       if (t.type == "Income") {
-        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        int monthDiff =
+            (now.year - t.date.year) * 12 + now.month - t.date.month;
         if (monthDiff >= 0 && monthDiff < 6) {
           data[5 - monthDiff] += t.amount;
         }
@@ -178,7 +189,8 @@ class AddTransactionController extends GetxController {
     DateTime now = DateTime.now();
     for (var t in transactions) {
       if (t.type == "Expense") {
-        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        int monthDiff =
+            (now.year - t.date.year) * 12 + now.month - t.date.month;
         if (monthDiff >= 0 && monthDiff < 6) {
           data[5 - monthDiff] += t.amount;
         }
@@ -193,7 +205,8 @@ class AddTransactionController extends GetxController {
     DateTime now = DateTime.now();
     for (var t in transactions) {
       if (t.type == "Expense") {
-        int monthDiff = (now.year - t.date.year) * 12 + now.month - t.date.month;
+        int monthDiff =
+            (now.year - t.date.year) * 12 + now.month - t.date.month;
         if (monthDiff >= 0 && monthDiff < 4) {
           data[3 - monthDiff] += t.amount;
         }
@@ -204,10 +217,18 @@ class AddTransactionController extends GetxController {
 
   List<double> get last4MonthsBudget {
     final budgetController = Get.find<CreateBudgetController>();
-    double totalBudget = budgetController.budgets.fold(0.0, (sum, b) => sum + b.total);
-    // Since we don't have historical budget data, we use current total budget for current month 
+    double totalBudget = budgetController.budgets.fold(
+      0.0,
+      (sum, b) => sum + b.total,
+    );
+    // Since we don't have historical budget data, we use current total budget for current month
     // and a simulated/historical average for others, or just the same for simplicity in this demo.
-    return [totalBudget * 0.8, totalBudget * 0.9, totalBudget * 1.1, totalBudget];
+    return [
+      totalBudget * 0.8,
+      totalBudget * 0.9,
+      totalBudget * 1.1,
+      totalBudget,
+    ];
   }
 
   String getIconPath(String category) {
