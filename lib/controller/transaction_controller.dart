@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 class AddTransactionController extends GetxController {
   var isIncome = false.obs;
   var repeat = false.obs;
+  var transactionToEdit = Rxn<TransactionModel>();
 
   var category = RxnString();
   var wallet = RxnString();
@@ -59,7 +60,7 @@ class AddTransactionController extends GetxController {
     if (budgetController.budgets.isEmpty) {
       return ["Monthly", "Weekly", "Travel", "Custom"];
     }
-    return budgetController.budgets.map((b) => b.category).toList();
+    return budgetController.budgets.map((b) => b.category).toSet().toList();
   }
 
   // Observable list of transactions
@@ -118,6 +119,12 @@ class AddTransactionController extends GetxController {
       date: DateTime.now(),
     );
 
+    // If we are editing, remove the old one first
+    if (transactionToEdit.value != null) {
+      // Silence the "Deleted successfully" snackbar during edit
+      _deleteSilently(transactionToEdit.value!);
+    }
+
     // 1. Add to transactions list
     transactions.add(transaction);
 
@@ -163,14 +170,103 @@ class AddTransactionController extends GetxController {
     }
 
     // Clear fields
+    clearFields();
+
+    Get.back(); // Navigate back to home
+    showCustomSnackBar("Success",
+        transactionToEdit.value != null ? "Transaction updated" : "${transaction.type} added successfully");
+    transactionToEdit.value = null;
+  }
+
+  void deleteTransaction(TransactionModel transaction) {
+    // 1. Reverse Wallet Balance
+    final walletController = Get.find<CreateWalletController>();
+    final selectedWalletIndex = walletController.wallets.indexWhere(
+      (w) => w.name == transaction.wallet,
+    );
+
+    if (selectedWalletIndex != -1) {
+      final oldWallet = walletController.wallets[selectedWalletIndex];
+      final newBalance = transaction.type == "Income"
+          ? oldWallet.balance - transaction.amount
+          : oldWallet.balance + transaction.amount;
+      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
+        balance: newBalance,
+      );
+    }
+
+    // 2. Reverse Budget Spent (only for expenses)
+    if (transaction.type == "Expense") {
+      final budgetController = Get.find<CreateBudgetController>();
+      final selectedBudgetIndex = budgetController.budgets.indexWhere(
+        (b) => b.category == transaction.budget,
+      );
+      if (selectedBudgetIndex != -1) {
+        final oldBudget = budgetController.budgets[selectedBudgetIndex];
+        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
+          spent: oldBudget.spent - transaction.amount,
+        );
+      }
+    }
+
+    // 3. Remove from transactions list
+    transactions.remove(transaction);
+    showCustomSnackBar("Success", "Transaction deleted successfully");
+  }
+
+  void _deleteSilently(TransactionModel transaction) {
+    // 1. Reverse Wallet Balance
+    final walletController = Get.find<CreateWalletController>();
+    final selectedWalletIndex = walletController.wallets.indexWhere(
+      (w) => w.name == transaction.wallet,
+    );
+
+    if (selectedWalletIndex != -1) {
+      final oldWallet = walletController.wallets[selectedWalletIndex];
+      final newBalance = transaction.type == "Income"
+          ? oldWallet.balance - transaction.amount
+          : oldWallet.balance + transaction.amount;
+      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
+        balance: newBalance,
+      );
+    }
+
+    // 2. Reverse Budget Spent (only for expenses)
+    if (transaction.type == "Expense") {
+      final budgetController = Get.find<CreateBudgetController>();
+      final selectedBudgetIndex = budgetController.budgets.indexWhere(
+        (b) => b.category == transaction.budget,
+      );
+      if (selectedBudgetIndex != -1) {
+        final oldBudget = budgetController.budgets[selectedBudgetIndex];
+        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
+          spent: oldBudget.spent - transaction.amount,
+        );
+      }
+    }
+
+    // 3. Remove from transactions list
+    transactions.remove(transaction);
+  }
+
+  void initForEdit(TransactionModel t) {
+    transactionToEdit.value = t;
+    isIncome.value = t.type == "Income";
+    amountController.text = t.amount.toStringAsFixed(0);
+    noteController.text = t.note;
+    category.value = t.category;
+    wallet.value = t.wallet;
+    budget.value = t.budget;
+  }
+
+  void clearFields() {
     amountController.clear();
     noteController.clear();
     category.value = null;
     wallet.value = null;
     budget.value = null;
-
-    Get.back(); // Navigate back to home
-    showCustomSnackBar("Success", "${transaction.type} added successfully");
+    transactionToEdit.value = null;
+    repeat.value = false;
   }
 
   double get totalIncome => transactions

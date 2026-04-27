@@ -19,7 +19,9 @@ class AddTransaction extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
-        title: "Add Transaction",
+        title: controller.transactionToEdit.value != null
+            ? "Edit Transaction"
+            : "Add Transaction",
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -228,9 +230,11 @@ class AddTransaction extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          controller.isIncome.value
-                              ? "Add Income"
-                              : "Add Expense",
+                          controller.transactionToEdit.value != null
+                              ? "Update Transaction"
+                              : (controller.isIncome.value
+                                  ? "Add Income"
+                                  : "Add Expense"),
                           style: TextStyle(
                             fontSize: 16,
                             color: AppColors.white,
@@ -305,7 +309,7 @@ class AddTransaction extends StatelessWidget {
         SizedBox(height: 15),
         DropdownButtonFormField<String>(
           // ignore: deprecated_member_use
-          value: value,
+          value: items.contains(value) ? value : null,
           hint: Text("Select"),
           decoration: InputDecoration(
             filled: true,

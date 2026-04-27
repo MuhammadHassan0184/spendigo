@@ -9,6 +9,7 @@ class TransactionTile extends StatelessWidget {
   final String iconPath;
   final Color color;
   final bool isIncome;
+  final VoidCallback? onTap;
 
   const TransactionTile({
     super.key,
@@ -18,11 +19,13 @@ class TransactionTile extends StatelessWidget {
     required this.iconPath,
     required this.color,
     this.isIncome = true,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       contentPadding: EdgeInsets.zero,
       leading: Container(
         padding: const EdgeInsets.all(10),

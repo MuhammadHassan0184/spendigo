@@ -284,13 +284,30 @@ class Home extends StatelessWidget {
                       return Column(
                         children: list
                             .map(
-                              (t) => TransactionTile(
-                                title: t.category,
-                                subtitle: t.note.isEmpty ? "No note" : t.note,
-                                amount: "+ Rs. ${t.amount.toStringAsFixed(2)}",
-                                iconPath: controller.getIconPath(t.category),
-                                color: controller.getCategoryColor(t.category),
-                                isIncome: true,
+                              (t) => Dismissible(
+                                key: Key(t.date.toString() + t.amount.toString()),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(right: 20),
+                                  color: Colors.red,
+                                  child: Icon(Icons.delete, color: Colors.white),
+                                ),
+                                onDismissed: (direction) {
+                                  controller.deleteTransaction(t);
+                                },
+                                child: TransactionTile(
+                                  title: t.category,
+                                  subtitle: t.note.isEmpty ? "No note" : t.note,
+                                  amount: "+ Rs. ${t.amount.toStringAsFixed(2)}",
+                                  iconPath: controller.getIconPath(t.category),
+                                  color: controller.getCategoryColor(t.category),
+                                  isIncome: true,
+                                  onTap: () {
+                                    controller.initForEdit(t);
+                                    Get.toNamed(AppRoutesName.addTransaction);
+                                  },
+                                ),
                               ),
                             )
                             .toList(),
@@ -343,13 +360,30 @@ class Home extends StatelessWidget {
                       return Column(
                         children: list
                             .map(
-                              (t) => TransactionTile(
-                                title: t.category,
-                                subtitle: t.note.isEmpty ? "No note" : t.note,
-                                amount: "- Rs. ${t.amount.toStringAsFixed(2)}",
-                                iconPath: controller.getIconPath(t.category),
-                                color: controller.getCategoryColor(t.category),
-                                isIncome: false,
+                              (t) => Dismissible(
+                                key: Key(t.date.toString() + t.amount.toString()),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(right: 20),
+                                  color: Colors.red,
+                                  child: Icon(Icons.delete, color: Colors.white),
+                                ),
+                                onDismissed: (direction) {
+                                  controller.deleteTransaction(t);
+                                },
+                                child: TransactionTile(
+                                  title: t.category,
+                                  subtitle: t.note.isEmpty ? "No note" : t.note,
+                                  amount: "- Rs. ${t.amount.toStringAsFixed(2)}",
+                                  iconPath: controller.getIconPath(t.category),
+                                  color: controller.getCategoryColor(t.category),
+                                  isIncome: false,
+                                  onTap: () {
+                                    controller.initForEdit(t);
+                                    Get.toNamed(AppRoutesName.addTransaction);
+                                  },
+                                ),
                               ),
                             )
                             .toList(),
@@ -366,6 +400,7 @@ class Home extends StatelessWidget {
       ),
       floatingActionButton: CustomFAB(
         onTap: () {
+          controller.clearFields();
           Get.toNamed(AppRoutesName.addTransaction);
         },
       ),
