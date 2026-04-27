@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
 
@@ -85,11 +86,16 @@ class AddTransaction extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: "0",
                         hintStyle: TextStyle(color: Colors.white54),
-                        prefixText: "\$ ",
-                        prefixStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 48,
-                        ),
+                        prefix: Obx(() {
+                          final cur = Get.find<CurrencyController>().selectedCurrency.value;
+                          return Text(
+                            "$cur ",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 48,
+                            ),
+                          );
+                        }),
                         border: InputBorder.none,
                       ),
                     ),

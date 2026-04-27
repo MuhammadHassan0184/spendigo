@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 
@@ -60,7 +61,7 @@ class TransactionHistory extends StatelessWidget {
             title: t.category,
             subtitle: t.note.isEmpty ? "No note" : t.note,
             amount:
-                "${type == "Income" ? "+" : "-"} Rs. ${t.amount.toStringAsFixed(2)}",
+                "${type == "Income" ? "+" : "-"} ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
             iconPath: controller.getIconPath(t.category),
             color: controller.getCategoryColor(t.category),
             isIncome: type == "Income",

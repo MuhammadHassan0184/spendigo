@@ -6,6 +6,7 @@ import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 
@@ -147,14 +148,42 @@ class Home extends StatelessWidget {
                           SizedBox(height: 6),
 
                           Obx(
-                            () => Text(
-                              "Rs. ${controller.totalBalance.toStringAsFixed(2)}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            () {
+                              final currencyController = Get.find<CurrencyController>();
+                              return Row(
+                                children: [
+                                  PopupMenuButton<String>(
+                                    onSelected: (String value) {
+                                      currencyController.changeCurrency(value);
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return currencyController.currencies.map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice,
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                    child: Text(
+                                      "${currencyController.selectedCurrency.value} ",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.totalBalance.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
                           ),
 
                           SizedBox(height: 16),
@@ -180,13 +209,16 @@ class Home extends StatelessWidget {
                                     ],
                                   ),
                                   Obx(
-                                    () => Text(
-                                      "Rs. ${controller.totalIncome.toStringAsFixed(2)}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    () {
+                                      final currencyController = Get.find<CurrencyController>();
+                                      return Text(
+                                        "${currencyController.selectedCurrency.value} ${controller.totalIncome.toStringAsFixed(2)}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -209,13 +241,16 @@ class Home extends StatelessWidget {
                                     ],
                                   ),
                                   Obx(
-                                    () => Text(
-                                      "Rs. ${controller.totalExpense.toStringAsFixed(2)}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    () {
+                                      final currencyController = Get.find<CurrencyController>();
+                                      return Text(
+                                        "${currencyController.selectedCurrency.value} ${controller.totalExpense.toStringAsFixed(2)}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -299,7 +334,7 @@ class Home extends StatelessWidget {
                                 child: TransactionTile(
                                   title: t.category,
                                   subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount: "+ Rs. ${t.amount.toStringAsFixed(2)}",
+                                  amount: "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                   iconPath: controller.getIconPath(t.category),
                                   color: controller.getCategoryColor(t.category),
                                   isIncome: true,
@@ -375,7 +410,7 @@ class Home extends StatelessWidget {
                                 child: TransactionTile(
                                   title: t.category,
                                   subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount: "- Rs. ${t.amount.toStringAsFixed(2)}",
+                                  amount: "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                   iconPath: controller.getIconPath(t.category),
                                   color: controller.getCategoryColor(t.category),
                                   isIncome: false,

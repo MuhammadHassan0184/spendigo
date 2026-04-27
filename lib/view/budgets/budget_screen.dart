@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/budget_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 
@@ -120,7 +121,7 @@ class _BudgetCard extends StatelessWidget {
           const SizedBox(height: 12),
           // Remaining
           Text(
-            'Remaining Rs. ${remaining.toStringAsFixed(0)}',
+            'Remaining ${Get.find<CurrencyController>().selectedCurrency.value} ${remaining.toStringAsFixed(0)}',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w500,
@@ -141,7 +142,7 @@ class _BudgetCard extends StatelessWidget {
           const SizedBox(height: 8),
           // Spent / Total
           Text(
-            'Rs.${spent.toStringAsFixed(0)} of Rs.${total.toStringAsFixed(0)}',
+            '${Get.find<CurrencyController>().selectedCurrency.value}${spent.toStringAsFixed(0)} of ${Get.find<CurrencyController>().selectedCurrency.value}${total.toStringAsFixed(0)}',
             style: TextStyle(fontSize: 13, color: AppColors.grey),
           ),
         ],

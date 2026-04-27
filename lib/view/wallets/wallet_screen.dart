@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/view/wallets/graph/total_wealth_graph.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
@@ -29,13 +30,14 @@ class WalletScreen extends StatelessWidget {
               child: TotalWealthChart(),
             ),
             const SizedBox(height: 15),
-            
+
             Obx(() {
               if (controller.wallets.isEmpty) {
                 return Column(
                   children: [
                     WalletTile(
-                      amount: "Rs. 0.00",
+                      amount:
+                          "${Get.find<CurrencyController>().selectedCurrency.value} 0.00",
                       title: "No Wallets Added",
                       onTap: () {},
                     ),
@@ -47,7 +49,8 @@ class WalletScreen extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 15),
                     child: WalletTile(
-                      amount: "Rs. ${wallet.balance.toStringAsFixed(2)}",
+                      amount:
+                          "${Get.find<CurrencyController>().selectedCurrency.value} ${wallet.balance.toStringAsFixed(2)}",
                       title: wallet.name,
                       onTap: () {},
                     ),

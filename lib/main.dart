@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/budget_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/Models/wallet_model.dart';
@@ -42,6 +43,7 @@ void main() async {
   await Hive.openBox<TransactionModel>('transactions'); // This is like opening a specific Excel sheet where you store all transactions.
   await Hive.openBox<WalletModel>('wallets');
   await Hive.openBox<BudgetModel>('budgets');
+  await Hive.openBox('settings');
 
   runApp(const MyApp());
 }
@@ -83,5 +85,6 @@ class GlobalBinding extends Bindings {
     Get.put(CreateWalletController(), permanent: true);
     Get.put(AddTransactionController(), permanent: true);
     Get.put(CreateBudgetController(), permanent: true);
+    Get.put(CurrencyController(), permanent: true);
   }
 }

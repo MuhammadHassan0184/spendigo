@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/budget_controller.dart';
+import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 
@@ -53,15 +54,18 @@ class CreateBudget extends StatelessWidget {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                '\$ ',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.1,
-                                ),
-                              ),
+                              Obx(() {
+                                final cur = Get.find<CurrencyController>().selectedCurrency.value;
+                                return Text(
+                                  '$cur ',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.1,
+                                  ),
+                                );
+                              }),
                               Expanded(
                                 child: TextField(
                                   controller: controller.amountController,
