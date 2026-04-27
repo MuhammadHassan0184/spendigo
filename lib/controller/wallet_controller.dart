@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
+import 'package:hive/hive.dart';
 
 class CreateWalletController extends GetxController {
   var sliderValue = 0.0.obs;
@@ -15,11 +16,18 @@ class CreateWalletController extends GetxController {
 
   final double maxSliderAmount = 100000.0;
 
+  final _box = Hive.box<WalletModel>('wallets');
+
   @override
   void onInit() {
     super.onInit();
     // Default value set to 0 as requested
     amountController.text = "0";
+
+    // Load from Hive
+    if (_box.isNotEmpty) {
+      wallets.assignAll(_box.values.toList());
+    }
     
     // Sync slider -> amount
     ever(sliderValue, (double val) {
@@ -27,6 +35,12 @@ class CreateWalletController extends GetxController {
       if (amountController.text != amount.toStringAsFixed(0)) {
         amountController.text = amount.toStringAsFixed(0);
       }
+    });
+
+    // Save to Hive whenever wallets list changes
+    ever(wallets, (List<WalletModel> list) {
+      _box.clear();
+      _box.addAll(list);
     });
   }
 

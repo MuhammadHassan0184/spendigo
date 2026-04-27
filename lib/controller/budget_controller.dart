@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/Models/budget_model.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
+import 'package:hive/hive.dart';
 
 class CreateBudgetController extends GetxController {
   var sliderValue = 0.0.obs;
@@ -24,14 +25,18 @@ class CreateBudgetController extends GetxController {
   // Observable list of budgets
   var budgets = <BudgetModel>[].obs;
 
-  // We still need a scale for the slider, but we won't limit the actual entry.
-  // We'll increase the maxSliderAmount if the user enters a larger value to keep it "professional".
+  final _box = Hive.box<BudgetModel>('budgets');
   var maxSliderAmount = 50000.0.obs;
 
   @override
   void onInit() {
     super.onInit();
     amountController.text = "0";
+
+    // Load from Hive
+    if (_box.isNotEmpty) {
+      budgets.assignAll(_box.values.toList());
+    }
 
     // Sync slider -> amount
     ever(sliderValue, (double val) {
@@ -45,6 +50,12 @@ class CreateBudgetController extends GetxController {
     ever(maxSliderAmount, (double max) {
       final amount = sliderValue.value * (max / 100);
       amountController.text = amount.toStringAsFixed(0);
+    });
+
+    // Save to Hive whenever budgets list changes
+    ever(budgets, (List<BudgetModel> list) {
+      _box.clear();
+      _box.addAll(list);
     });
   }
 

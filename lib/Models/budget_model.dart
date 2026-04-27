@@ -1,8 +1,18 @@
+import 'package:hive/hive.dart';
+
+part 'budget_model.g.dart';
+
+@HiveType(typeId: 2)
 class BudgetModel {
+  @HiveField(0)
   final String category;
+  @HiveField(1)
   final double total;
+  @HiveField(2)
   final double spent;
+  @HiveField(3)
   final bool receiveAlert;
+  @HiveField(4)
   final double alertPercentage;
 
   BudgetModel({

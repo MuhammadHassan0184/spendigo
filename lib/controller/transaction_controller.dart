@@ -6,6 +6,7 @@ import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/budget_controller.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
+import 'package:hive/hive.dart';
 
 class AddTransactionController extends GetxController {
   var isIncome = false.obs;
@@ -63,6 +64,23 @@ class AddTransactionController extends GetxController {
 
   // Observable list of transactions
   var transactions = <TransactionModel>[].obs;
+
+  final _box = Hive.box<TransactionModel>('transactions');
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Load from Hive
+    if (_box.isNotEmpty) {
+      transactions.assignAll(_box.values.toList());
+    }
+
+    // Save to Hive whenever transactions list changes
+    ever(transactions, (List<TransactionModel> list) {
+      _box.clear();
+      _box.addAll(list);
+    });
+  }
 
   void toggleIncome(bool value) {
     isIncome.value = value;
