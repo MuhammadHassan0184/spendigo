@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
+import 'package:spendigo/controller/transaction_controller.dart';
 
 class TotalWealthChart extends StatelessWidget {
   const TotalWealthChart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<CreateWalletController>();
+    final walletController = Get.find<CreateWalletController>();
+    final transactionController = Get.find<AddTransactionController>();
     final width = MediaQuery.of(context).size.width;
 
     return Obx(() {
-      final wallets = controller.wallets;
-      final total = controller.totalWealth;
+      final total = walletController.totalWealth;
+      final wealthData = transactionController.monthlyWealth;
 
       return Container(
         padding: const EdgeInsets.all(20),
@@ -28,7 +30,7 @@ class TotalWealthChart extends StatelessWidget {
           children: [
             _header(width, total),
             SizedBox(height: width * 0.05),
-            _chart(width, wallets),
+            _chart(width, wealthData),
           ],
         ),
       );
@@ -54,48 +56,52 @@ class TotalWealthChart extends StatelessWidget {
     );
   }
 
-  Widget _chart(double width, RxList wallets) {
-    List<FlSpot> spots = [const FlSpot(0, 0)];
-    double cumulative = 0;
+  Widget _chart(double width, List<double> wealthData) {
+    const monthNames = [
+      "JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
+      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+    ];
     
-    for (int i = 0; i < wallets.length; i++) {
-      cumulative += wallets[i].balance;
-      spots.add(FlSpot((i + 1).toDouble(), cumulative));
-    }
+    final now = DateTime.now();
+    final months = List.generate(6, (i) {
+      final date = DateTime(now.year, now.month - (5 - i), 1);
+      return monthNames[date.month - 1];
+    });
 
-    // Default spot if no wallets
-    if (spots.length == 1) {
-      spots = [const FlSpot(0, 0), const FlSpot(1, 0)];
-    }
+    List<FlSpot> spots = List.generate(6, (i) => FlSpot(i.toDouble(), wealthData[i]));
 
-    double maxY = cumulative > 0 ? cumulative * 1.2 : 10;
+    double maxY = 0;
+    for (var val in wealthData) { if (val > maxY) maxY = val; }
+    maxY = maxY == 0 ? 100 : maxY * 1.2;
 
     return SizedBox(
       height: width * 0.6,
       child: LineChart(
         LineChartData(
+          minX: 0,
+          maxX: 5,
           minY: 0,
           maxY: maxY,
           gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
-            horizontalInterval: (maxY / 5) > 0 ? maxY / 5 : 2,
+            horizontalInterval: maxY / 5,
             verticalInterval: 1,
             getDrawingHorizontalLine: (value) =>
-                FlLine(color: Colors.grey.shade300, strokeWidth: 1),
+                FlLine(color: AppColors.stroke, strokeWidth: 1),
             getDrawingVerticalLine: (value) =>
-                FlLine(color: Colors.grey.shade300, strokeWidth: 1),
+                FlLine(color: AppColors.stroke, strokeWidth: 1),
           ),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                interval: (maxY / 5) > 0 ? maxY / 5 : 2,
+                interval: maxY / 5,
                 reservedSize: 40,
                 getTitlesWidget: (value, _) => Text(
                   value >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
                   style: TextStyle(
-                    fontSize: width * 0.03,
+                    fontSize: width * 0.025,
                     color: AppColors.grey,
                   ),
                 ),
@@ -105,16 +111,16 @@ class TotalWealthChart extends StatelessWidget {
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, _) {
-                  if (value == 0) return const Text('Start');
-                  int idx = value.toInt() - 1;
-                  if (idx >= 0 && idx < wallets.length) {
-                    return Text(
-                      wallets[idx].name.length > 5 
-                          ? wallets[idx].name.substring(0, 5) 
-                          : wallets[idx].name,
-                      style: TextStyle(
-                        fontSize: width * 0.03,
-                        color: AppColors.grey,
+                  int idx = value.toInt();
+                  if (idx >= 0 && idx < months.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        months[idx],
+                        style: TextStyle(
+                          fontSize: width * 0.025,
+                          color: AppColors.grey,
+                        ),
                       ),
                     );
                   }
@@ -129,17 +135,29 @@ class TotalWealthChart extends StatelessWidget {
           lineBarsData: [
             LineChartBarData(
               spots: spots,
-              isCurved: false, // Original was not curved
-              color: AppColors.black, // Original was black
+              isCurved: true,
+              curveSmoothness: 0.35,
+              color: AppColors.black,
               barWidth: 2,
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.black.withOpacity(0.15),
+                    Colors.transparent,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, bar, index) =>
                     FlDotCirclePainter(
-                      radius: width * 0.012,
+                      radius: 3,
                       color: Colors.white,
                       strokeWidth: 2,
-                      strokeColor: AppColors.black, // Original was black
+                      strokeColor: AppColors.black,
                     ),
               ),
             ),
@@ -151,7 +169,7 @@ class TotalWealthChart extends StatelessWidget {
                 return spots.map((spot) {
                   return LineTooltipItem(
                     "Rs. ${spot.y.toStringAsFixed(0)}",
-                    const TextStyle(color: Colors.white, fontSize: 12),
+                    const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                   );
                 }).toList();
               },

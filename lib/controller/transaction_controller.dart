@@ -199,6 +199,19 @@ class AddTransactionController extends GetxController {
     return data;
   }
 
+  List<double> get monthlyWealth {
+    List<double> income = monthlyIncome;
+    List<double> expense = monthlyExpense;
+    List<double> wealth = List.filled(6, 0.0);
+    double current = totalBalance;
+
+    wealth[5] = current;
+    for (int i = 4; i >= 0; i--) {
+      wealth[i] = wealth[i + 1] - (income[i + 1] - expense[i + 1]);
+    }
+    return wealth;
+  }
+
   // Monthly Budget vs Actual (Last 4 months)
   List<double> get last4MonthsActual {
     List<double> data = List.filled(4, 0.0);
