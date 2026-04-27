@@ -272,23 +272,12 @@ class Home extends StatelessWidget {
                           .toList();
 
                       if (list.isEmpty) {
-                        return Column(
-                          children: [
-                            TransactionTile(
-                              title: "Salary",
-                              subtitle: "Company Ltd.",
-                              amount: "+ Rs. 0.00",
-                              iconPath: "assets/salary.svg",
-                              color: AppColors.green,
-                            ),
-                            TransactionTile(
-                              title: "Pocket Money",
-                              subtitle: "Company Ltd.",
-                              amount: "+ Rs. 0.00",
-                              iconPath: "assets/pocketmoney.svg",
-                              color: Colors.blue,
-                            ),
-                          ],
+                        return TransactionTile(
+                          title: "Income",
+                          subtitle: "Company Ltd.",
+                          amount: "+ Rs. 0.00",
+                          iconPath: "assets/salary.svg",
+                          color: AppColors.green,
                         );
                       }
 
@@ -341,18 +330,11 @@ class Home extends StatelessWidget {
                         return Column(
                           children: [
                             TransactionTile(
-                              title: "Entertainment",
+                              title: "Expences",
                               subtitle: "Company Ltd.",
                               amount: "- Rs. 0.00",
                               iconPath: "assets/entertainment.svg",
                               color: Colors.blue.shade300,
-                            ),
-                            TransactionTile(
-                              title: "Food & Drink",
-                              subtitle: "Company Ltd.",
-                              amount: "- Rs. 0.00",
-                              iconPath: "assets/food.svg",
-                              color: AppColors.yellowgreen,
                             ),
                           ],
                         );
