@@ -45,14 +45,19 @@ class WalletScreen extends StatelessWidget {
                 );
               }
               return Column(
-                children: controller.wallets.map((wallet) {
+                children: controller.wallets.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var wallet = entry.value;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 15),
                     child: WalletTile(
                       amount:
                           "${Get.find<CurrencyController>().selectedCurrency.value} ${wallet.balance.toStringAsFixed(2)}",
                       title: wallet.name,
-                      onTap: () {},
+                      onTap: () {
+                        controller.initForEdit(wallet, index);
+                        Get.toNamed(AppRoutesName.createWallet);
+                      },
                     ),
                   );
                 }).toList(),
@@ -63,6 +68,7 @@ class WalletScreen extends StatelessWidget {
       ),
       floatingActionButton: CustomFAB(
         onTap: () {
+          controller.clearFields();
           Get.toNamed(AppRoutesName.createWallet);
         },
       ),

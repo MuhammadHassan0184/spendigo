@@ -20,7 +20,7 @@ class CreateWallet extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
-        title: "Create Wallet",
+        title: controller.editingIndex.value != null ? "Update Wallet" : "Create Wallet",
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -187,7 +187,7 @@ class CreateWallet extends StatelessWidget {
 
                           /// 🔹 Button
                           CustomButton(
-                            text: "Create Wallet",
+                            text: controller.editingIndex.value != null ? "Update Wallet" : "Create Wallet",
                             onPressed: () {
                               controller.createWallet();
                             },
