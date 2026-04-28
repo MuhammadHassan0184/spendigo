@@ -147,44 +147,45 @@ class Home extends StatelessWidget {
 
                           SizedBox(height: 6),
 
-                          Obx(
-                            () {
-                              final currencyController = Get.find<CurrencyController>();
-                              return Row(
-                                children: [
-                                  PopupMenuButton<String>(
-                                    onSelected: (String value) {
-                                      currencyController.changeCurrency(value);
-                                    },
-                                    itemBuilder: (BuildContext context) {
-                                      return currencyController.currencies.map((String choice) {
-                                        return PopupMenuItem<String>(
-                                          value: choice,
-                                          child: Text(choice),
-                                        );
-                                      }).toList();
-                                    },
-                                    child: Text(
-                                      "${currencyController.selectedCurrency.value} ",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    controller.totalBalance.toStringAsFixed(2),
+                          Obx(() {
+                            final currencyController =
+                                Get.find<CurrencyController>();
+                            return Row(
+                              children: [
+                                PopupMenuButton<String>(
+                                  onSelected: (String value) {
+                                    currencyController.changeCurrency(value);
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return currencyController.currencies.map((
+                                      String choice,
+                                    ) {
+                                      return PopupMenuItem<String>(
+                                        value: choice,
+                                        child: Text(choice),
+                                      );
+                                    }).toList();
+                                  },
+                                  child: Text(
+                                    "${currencyController.selectedCurrency.value} ",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 26,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ],
-                              );
-                            }
-                          ),
+                                ),
+                                Text(
+                                  controller.totalBalance.toStringAsFixed(2),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
 
                           SizedBox(height: 16),
 
@@ -208,18 +209,17 @@ class Home extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Obx(
-                                    () {
-                                      final currencyController = Get.find<CurrencyController>();
-                                      return Text(
-                                        "${currencyController.selectedCurrency.value} ${controller.totalIncome.toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  Obx(() {
+                                    final currencyController =
+                                        Get.find<CurrencyController>();
+                                    return Text(
+                                      "${currencyController.selectedCurrency.value} ${controller.totalIncome.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }),
                                 ],
                               ),
 
@@ -240,18 +240,17 @@ class Home extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Obx(
-                                    () {
-                                      final currencyController = Get.find<CurrencyController>();
-                                      return Text(
-                                        "${currencyController.selectedCurrency.value} ${controller.totalExpense.toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  Obx(() {
+                                    final currencyController =
+                                        Get.find<CurrencyController>();
+                                    return Text(
+                                      "${currencyController.selectedCurrency.value} ${controller.totalExpense.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }),
                                 ],
                               ),
                             ],
@@ -320,23 +319,61 @@ class Home extends StatelessWidget {
                         children: list
                             .map(
                               (t) => Dismissible(
-                                key: Key(t.date.toString() + t.amount.toString()),
+                                key: Key(
+                                  t.date.toString() + t.amount.toString(),
+                                ),
                                 direction: DismissDirection.endToStart,
                                 background: Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(right: 20),
                                   color: Colors.red,
-                                  child: Icon(Icons.delete, color: Colors.white),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                confirmDismiss: (direction) async {
+                                  return await Get.dialog<bool>(
+                                    AlertDialog(
+                                      title: Text("Delete Transaction"),
+                                      content: Text(
+                                        "Are you sure you want to delete this ${t.type.toLowerCase()}?",
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Get.back(result: false),
+                                          child: Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Get.back(result: true),
+                                          child: Text(
+                                            "Delete",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                                 onDismissed: (direction) {
                                   controller.deleteTransaction(t);
                                 },
                                 child: TransactionTile(
                                   title: t.category,
                                   subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount: "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
+                                  amount:
+                                      "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                   iconPath: controller.getIconPath(t.category),
-                                  color: controller.getCategoryColor(t.category),
+                                  color: controller.getCategoryColor(
+                                    t.category,
+                                  ),
                                   isIncome: true,
                                   onTap: () {
                                     controller.initForEdit(t);
@@ -396,23 +433,61 @@ class Home extends StatelessWidget {
                         children: list
                             .map(
                               (t) => Dismissible(
-                                key: Key(t.date.toString() + t.amount.toString()),
+                                key: Key(
+                                  t.date.toString() + t.amount.toString(),
+                                ),
                                 direction: DismissDirection.endToStart,
                                 background: Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(right: 20),
                                   color: Colors.red,
-                                  child: Icon(Icons.delete, color: Colors.white),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                confirmDismiss: (direction) async {
+                                  return await Get.dialog<bool>(
+                                    AlertDialog(
+                                      title: Text("Delete Transaction"),
+                                      content: Text(
+                                        "Are you sure you want to delete this ${t.type.toLowerCase()}?",
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Get.back(result: false),
+                                          child: Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Get.back(result: true),
+                                          child: Text(
+                                            "Delete",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                                 onDismissed: (direction) {
                                   controller.deleteTransaction(t);
                                 },
                                 child: TransactionTile(
                                   title: t.category,
                                   subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount: "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
+                                  amount:
+                                      "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                   iconPath: controller.getIconPath(t.category),
-                                  color: controller.getCategoryColor(t.category),
+                                  color: controller.getCategoryColor(
+                                    t.category,
+                                  ),
                                   isIncome: false,
                                   onTap: () {
                                     controller.initForEdit(t);
