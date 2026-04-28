@@ -15,12 +15,12 @@ class StatisticsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: BudgetVsActualChart(),
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ExpenseVsIncomeChart(),

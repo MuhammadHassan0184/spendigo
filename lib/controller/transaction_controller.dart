@@ -7,6 +7,7 @@ import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/budget_controller.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddTransactionController extends GetxController {
   var isIncome = false.obs;
@@ -21,6 +22,7 @@ class AddTransactionController extends GetxController {
 
   final TextEditingController amountController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
+  var attachmentPath = RxnString();
 
   // Predefined lists
   final List<String> incomeCategories = [
@@ -71,16 +73,19 @@ class AddTransactionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load from Hive
-    if (_box.isNotEmpty) {
-      transactions.assignAll(_box.values.toList());
-    }
+    loadTransactions();
 
     // Save to Hive whenever transactions list changes
     ever(transactions, (List<TransactionModel> list) {
       _box.clear();
       _box.addAll(list);
     });
+  }
+
+  void loadTransactions() {
+    if (_box.isNotEmpty) {
+      transactions.assignAll(_box.values.toList());
+    }
   }
 
   void toggleIncome(bool value) {
@@ -94,6 +99,15 @@ class AddTransactionController extends GetxController {
 
   void setRepeatType(String value) {
     repeatType.value = value;
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      attachmentPath.value = image.path;
+    }
   }
 
   void addTransaction() {
@@ -116,7 +130,8 @@ class AddTransactionController extends GetxController {
       budget: budget.value ?? "Default",
       note: noteController.text,
       amount: amount,
-      date: DateTime.now(),
+      date: transactionToEdit.value?.date ?? DateTime.now(),
+      attachmentPath: attachmentPath.value,
     );
 
     // If we are editing, remove the old one first
@@ -173,8 +188,12 @@ class AddTransactionController extends GetxController {
     clearFields();
 
     Get.back(); // Navigate back to home
-    showCustomSnackBar("Success",
-        transactionToEdit.value != null ? "Transaction updated" : "${transaction.type} added successfully");
+    showCustomSnackBar(
+      "Success",
+      transactionToEdit.value != null
+          ? "Transaction updated"
+          : "${transaction.type} added successfully",
+    );
     transactionToEdit.value = null;
   }
 
@@ -257,6 +276,7 @@ class AddTransactionController extends GetxController {
     category.value = t.category;
     wallet.value = t.wallet;
     budget.value = t.budget;
+    attachmentPath.value = t.attachmentPath;
   }
 
   void clearFields() {
@@ -267,6 +287,7 @@ class AddTransactionController extends GetxController {
     budget.value = null;
     transactionToEdit.value = null;
     repeat.value = false;
+    attachmentPath.value = null;
   }
 
   double get totalIncome => transactions

@@ -5,6 +5,7 @@ import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
+import 'package:spendigo/view/DashBoard/transaction_details.dart';
 
 class TransactionHistory extends StatelessWidget {
   TransactionHistory({super.key});
@@ -65,6 +66,9 @@ class TransactionHistory extends StatelessWidget {
             iconPath: controller.getIconPath(t.category),
             color: controller.getCategoryColor(t.category),
             isIncome: type == "Income",
+            onTap: () {
+              Get.to(() => TransactionDetails(transaction: t));
+            },
           );
         },
       );

@@ -9,6 +9,7 @@ import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
+import 'package:spendigo/view/DashBoard/transaction_details.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -49,7 +50,6 @@ class Home extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // SizedBox(height: height * 0.05),
                           SizedBox(height: 25),
 
                           Row(
@@ -141,7 +141,6 @@ class Home extends StatelessWidget {
                                   fontSize: 14,
                                 ),
                               ),
-                              // Icon(Icons.more_horiz, color: Colors.white),
                             ],
                           ),
 
@@ -276,8 +275,6 @@ class Home extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 1),
-
                     /// INCOME HEADER
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -318,68 +315,19 @@ class Home extends StatelessWidget {
                       return Column(
                         children: list
                             .map(
-                              (t) => Dismissible(
-                                key: Key(
-                                  t.date.toString() + t.amount.toString(),
-                                ),
-                                direction: DismissDirection.endToStart,
-                                background: Container(
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.only(right: 20),
-                                  color: Colors.red,
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                confirmDismiss: (direction) async {
-                                  return await Get.dialog<bool>(
-                                    AlertDialog(
-                                      title: Text("Delete Transaction"),
-                                      content: Text(
-                                        "Are you sure you want to delete this ${t.type.toLowerCase()}?",
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: false),
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: true),
-                                          child: Text(
-                                            "Delete",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              (t) => TransactionTile(
+                                title: t.category,
+                                subtitle: t.note.isEmpty ? "No note" : t.note,
+                                amount:
+                                    "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
+                                iconPath: controller.getIconPath(t.category),
+                                color: controller.getCategoryColor(t.category),
+                                isIncome: true,
+                                onTap: () {
+                                  Get.to(
+                                    () => TransactionDetails(transaction: t),
                                   );
                                 },
-                                onDismissed: (direction) {
-                                  controller.deleteTransaction(t);
-                                },
-                                child: TransactionTile(
-                                  title: t.category,
-                                  subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount:
-                                      "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
-                                  iconPath: controller.getIconPath(t.category),
-                                  color: controller.getCategoryColor(
-                                    t.category,
-                                  ),
-                                  isIncome: true,
-                                  onTap: () {
-                                    controller.initForEdit(t);
-                                    Get.toNamed(AppRoutesName.addTransaction);
-                                  },
-                                ),
                               ),
                             )
                             .toList(),
@@ -432,68 +380,19 @@ class Home extends StatelessWidget {
                       return Column(
                         children: list
                             .map(
-                              (t) => Dismissible(
-                                key: Key(
-                                  t.date.toString() + t.amount.toString(),
-                                ),
-                                direction: DismissDirection.endToStart,
-                                background: Container(
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.only(right: 20),
-                                  color: Colors.red,
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                confirmDismiss: (direction) async {
-                                  return await Get.dialog<bool>(
-                                    AlertDialog(
-                                      title: Text("Delete Transaction"),
-                                      content: Text(
-                                        "Are you sure you want to delete this ${t.type.toLowerCase()}?",
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: false),
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Get.back(result: true),
-                                          child: Text(
-                                            "Delete",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              (t) => TransactionTile(
+                                title: t.category,
+                                subtitle: t.note.isEmpty ? "No note" : t.note,
+                                amount:
+                                    "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
+                                iconPath: controller.getIconPath(t.category),
+                                color: controller.getCategoryColor(t.category),
+                                isIncome: false,
+                                onTap: () {
+                                  Get.to(
+                                    () => TransactionDetails(transaction: t),
                                   );
                                 },
-                                onDismissed: (direction) {
-                                  controller.deleteTransaction(t);
-                                },
-                                child: TransactionTile(
-                                  title: t.category,
-                                  subtitle: t.note.isEmpty ? "No note" : t.note,
-                                  amount:
-                                      "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
-                                  iconPath: controller.getIconPath(t.category),
-                                  color: controller.getCategoryColor(
-                                    t.category,
-                                  ),
-                                  isIncome: false,
-                                  onTap: () {
-                                    controller.initForEdit(t);
-                                    Get.toNamed(AppRoutesName.addTransaction);
-                                  },
-                                ),
                               ),
                             )
                             .toList(),

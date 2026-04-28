@@ -19,6 +19,9 @@ class TransactionModel {
   @HiveField(6)
   final DateTime date;
 
+  @HiveField(7)
+  final String? attachmentPath;
+
   TransactionModel({
     required this.type,
     required this.category,
@@ -27,5 +30,6 @@ class TransactionModel {
     required this.note,
     required this.amount,
     required this.date,
+    this.attachmentPath,
   });
 }

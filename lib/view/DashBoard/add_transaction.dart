@@ -1,5 +1,4 @@
-// ignore_for_file: avoid_print
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
@@ -87,13 +86,12 @@ class AddTransaction extends StatelessWidget {
                         hintText: "0",
                         hintStyle: TextStyle(color: Colors.white54),
                         prefix: Obx(() {
-                          final cur = Get.find<CurrencyController>().selectedCurrency.value;
+                          final cur = Get.find<CurrencyController>()
+                              .selectedCurrency
+                              .value;
                           return Text(
                             "$cur ",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 48),
                           );
                         }),
                         border: InputBorder.none,
@@ -164,16 +162,57 @@ class AddTransaction extends StatelessWidget {
 
                   SizedBox(height: 15),
 
-                  Container(
-                    height: 55,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "📎  Add attachment",
-                        style: TextStyle(color: Colors.grey),
+                  Obx(
+                    () => GestureDetector(
+                      onTap: () => controller.pickImage(),
+                      child: Container(
+                        height: 55,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: controller.attachmentPath.value != null
+                            ? Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.file(
+                                      File(controller.attachmentPath.value!),
+                                      width: double.infinity,
+                                      height: 55,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 5,
+                                    top: 5,
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          controller.attachmentPath.value =
+                                              null,
+                                      child: Container(
+                                        padding: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Center(
+                                child: Text(
+                                  "📎  Add attachment",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
                       ),
                     ),
                   ),
@@ -239,8 +278,8 @@ class AddTransaction extends StatelessWidget {
                           controller.transactionToEdit.value != null
                               ? "Update Transaction"
                               : (controller.isIncome.value
-                                  ? "Add Income"
-                                  : "Add Expense"),
+                                    ? "Add Income"
+                                    : "Add Expense"),
                           style: TextStyle(
                             fontSize: 16,
                             color: AppColors.white,
