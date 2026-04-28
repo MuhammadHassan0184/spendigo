@@ -7,7 +7,7 @@ import 'package:spendigo/view/Auth/sign_up.dart';
 import 'package:spendigo/view/DashBoard/add_transaction.dart';
 import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/DashBoard/main_screen.dart';
-import 'package:spendigo/view/DashBoard/transaction_history.dart';
+import 'package:spendigo/view/TranscationHistory/transaction_history.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';
 import 'package:spendigo/view/budgets/budget_screen.dart';
 import 'package:spendigo/view/budgets/create_budget.dart';

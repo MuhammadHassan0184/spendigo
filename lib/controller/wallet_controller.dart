@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
-
+import 'package:spendigo/controller/transaction_controller.dart';
+import 'package:spendigo/Models/transaction_model.dart';
 class CreateWalletController extends GetxController {
   var sliderValue = 0.0.obs;
   var receiveAlert = true.obs;
@@ -73,6 +74,23 @@ class CreateWalletController extends GetxController {
     );
 
     wallets.add(newWallet);
+    
+    // Add income transaction for the initial balance so it reflects in the transaction list
+    if (budgetAmount > 0) {
+      if (Get.isRegistered<AddTransactionController>()) {
+        final transController = Get.find<AddTransactionController>();
+        final initialTransaction = TransactionModel(
+          type: "Income",
+          category: "Other Income",
+          wallet: nameController.text,
+          budget: "Default",
+          note: "Initial Balance",
+          amount: budgetAmount,
+          date: DateTime.now(),
+        );
+        transController.transactions.add(initialTransaction);
+      }
+    }
     
     // Reset fields to default
     nameController.clear();

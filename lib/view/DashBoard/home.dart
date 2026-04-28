@@ -9,7 +9,7 @@ import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
-import 'package:spendigo/view/DashBoard/transaction_details.dart';
+import 'package:spendigo/view/TranscationHistory/transaction_details.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});

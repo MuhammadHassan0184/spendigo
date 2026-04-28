@@ -5,7 +5,7 @@ import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
-import 'package:spendigo/view/DashBoard/transaction_details.dart';
+import 'package:spendigo/view/TranscationHistory/transaction_details.dart';
 
 class TransactionHistory extends StatelessWidget {
   TransactionHistory({super.key});
