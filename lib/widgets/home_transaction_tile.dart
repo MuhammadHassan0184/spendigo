@@ -46,7 +46,7 @@ class TransactionTile extends StatelessWidget {
         style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
       ),
 
-      subtitle: Text(subtitle),
+      subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
 
       trailing: Text(
         amount,
