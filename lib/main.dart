@@ -15,11 +15,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/Models/budget_model.dart';
+import 'package:spendigo/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await NotificationService.init();
+  await NotificationService.init();
   print("Starting Firebase init...");
 
   try {

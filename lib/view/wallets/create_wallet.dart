@@ -8,6 +8,7 @@ import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
+import 'package:spendigo/services/notification_service.dart';
 
 class CreateWallet extends StatelessWidget {
   const CreateWallet({super.key});
@@ -20,7 +21,9 @@ class CreateWallet extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
-        title: controller.editingIndex.value != null ? "Update Wallet" : "Create Wallet",
+        title: controller.editingIndex.value != null
+            ? "Update Wallet"
+            : "Create Wallet",
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -57,7 +60,9 @@ class CreateWallet extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Obx(() {
-                                final cur = Get.find<CurrencyController>().selectedCurrency.value;
+                                final cur = Get.find<CurrencyController>()
+                                    .selectedCurrency
+                                    .value;
                                 return Text(
                                   '$cur ',
                                   style: const TextStyle(
@@ -73,7 +78,8 @@ class CreateWallet extends StatelessWidget {
                                   controller: controller.amountController,
                                   keyboardType: TextInputType.number,
                                   cursorColor: Colors.white,
-                                  onChanged: (val) => controller.updateSliderFromAmount(val),
+                                  onChanged: (val) =>
+                                      controller.updateSliderFromAmount(val),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 48,
@@ -187,11 +193,24 @@ class CreateWallet extends StatelessWidget {
 
                           /// 🔹 Button
                           CustomButton(
-                            text: controller.editingIndex.value != null ? "Update Wallet" : "Create Wallet",
+                            text: controller.editingIndex.value != null
+                                ? "Update Wallet"
+                                : "Create Wallet",
                             onPressed: () {
                               controller.createWallet();
                             },
                           ),
+                          //  Center(
+                          //   child: ElevatedButton(
+                          //     onPressed: () {
+                          //       NotificationService.showNotification(
+                          //         'Test Alert',
+                          //         'Your notification system is working!',
+                          //       );
+                          //     },
+                          //     child: const Text('Test Notification'),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

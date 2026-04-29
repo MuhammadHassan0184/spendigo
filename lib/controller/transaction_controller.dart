@@ -8,6 +8,7 @@ import 'package:spendigo/controller/budget_controller.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spendigo/services/notification_service.dart';
 
 class AddTransactionController extends GetxController {
   var isIncome = false.obs;
@@ -157,6 +158,25 @@ class AddTransactionController extends GetxController {
       walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
         balance: newBalance,
       );
+
+      // Low Balance Notification Check
+      if (transaction.type == "Expense" && oldWallet.receiveAlert) {
+        // Calculate the alert threshold based on the initial balance.
+        // Since sliderValue (alertPercentage) maps to the initial balance:
+        // initialBalance = oldWallet.alertPercentage * (100000 / 100)
+        final initialBalance = oldWallet.alertPercentage * 1000.0;
+        
+        // Let's alert when balance drops below 20% of the initial balance
+        // You can change this 0.2 multiplier to your preferred threshold
+        final threshold = initialBalance * 0.2; 
+
+        if (newBalance <= threshold && oldWallet.balance > threshold) {
+          NotificationService.showNotification(
+            'Low Balance Alert!',
+            'Your ${oldWallet.name} wallet balance has dropped below the threshold.',
+          );
+        }
+      }
     } else {
       // If no wallet exists with this name, create a new one automatically
       final newWallet = WalletModel(
@@ -178,9 +198,24 @@ class AddTransactionController extends GetxController {
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
+        final newSpent = oldBudget.spent + transaction.amount;
         budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
-          spent: oldBudget.spent + transaction.amount,
+          spent: newSpent,
         );
+
+        // Budget Low Alert Notification
+        if (oldBudget.receiveAlert && oldBudget.total > 0) {
+          final threshold = oldBudget.total * (oldBudget.alertPercentage / 100);
+          final oldSpent = oldBudget.spent;
+
+          // Fire only when the threshold is crossed (not on every expense)
+          if (newSpent >= threshold && oldSpent < threshold) {
+            NotificationService.showNotification(
+              'Budget Alert: ${oldBudget.category}',
+              'You have used ${oldBudget.alertPercentage.toInt()}% of your ${oldBudget.category} budget!',
+            );
+          }
+        }
       }
     }
 
