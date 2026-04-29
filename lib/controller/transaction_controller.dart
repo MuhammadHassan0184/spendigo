@@ -165,10 +165,10 @@ class AddTransactionController extends GetxController {
         // Since sliderValue (alertPercentage) maps to the initial balance:
         // initialBalance = oldWallet.alertPercentage * (100000 / 100)
         final initialBalance = oldWallet.alertPercentage * 1000.0;
-        
+
         // Let's alert when balance drops below 20% of the initial balance
         // You can change this 0.2 multiplier to your preferred threshold
-        final threshold = initialBalance * 0.2; 
+        final threshold = initialBalance * 0.2;
 
         if (newBalance <= threshold && oldWallet.balance > threshold) {
           NotificationService.showNotification(
