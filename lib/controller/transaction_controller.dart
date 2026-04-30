@@ -10,7 +10,8 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spendigo/services/notification_service.dart';
 
-class AddTransactionController extends GetxController {
+class AddTransactionController extends GetxController
+    with WidgetsBindingObserver {
   var isIncome = false.obs;
   var repeat = false.obs;
   var transactionToEdit = Rxn<TransactionModel>();
@@ -74,13 +75,29 @@ class AddTransactionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
     loadTransactions();
 
     // Save to Hive whenever transactions list changes
     ever(transactions, (List<TransactionModel> list) {
-      _box.clear();
-      _box.addAll(list);
+      _box.clear().then((_) => _box.addAll(list));
     });
+
+    // Check for recurring transactions on startup
+    checkAndProcessRecurringTransactions();
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      checkAndProcessRecurringTransactions();
+    }
   }
 
   void loadTransactions() {
@@ -133,6 +150,11 @@ class AddTransactionController extends GetxController {
       amount: amount,
       date: transactionToEdit.value?.date ?? DateTime.now(),
       attachmentPath: attachmentPath.value,
+      isRepeating: repeat.value,
+      repeatInterval: repeat.value ? repeatType.value : null,
+      lastRepeatedDate: repeat.value
+          ? (transactionToEdit.value?.lastRepeatedDate ?? DateTime.now())
+          : null,
     );
 
     // If we are editing, remove the old one first
@@ -312,6 +334,10 @@ class AddTransactionController extends GetxController {
     wallet.value = t.wallet;
     budget.value = t.budget;
     attachmentPath.value = t.attachmentPath;
+    repeat.value = t.isRepeating ?? false;
+    if (t.repeatInterval != null) {
+      repeatType.value = t.repeatInterval!;
+    }
   }
 
   void clearFields() {
@@ -322,6 +348,7 @@ class AddTransactionController extends GetxController {
     budget.value = null;
     transactionToEdit.value = null;
     repeat.value = false;
+    repeatType.value = "Every day"; // Reset to default
     attachmentPath.value = null;
   }
 
@@ -453,6 +480,144 @@ class AddTransactionController extends GetxController {
         return Colors.pink;
       default:
         return Colors.grey;
+    }
+  }
+
+  void checkAndProcessRecurringTransactions() {
+    print("Checking for recurring transactions...");
+    bool updated = false;
+    DateTime now = DateTime.now();
+    List<TransactionModel> newTransactions = [];
+
+    for (int i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+      if (t.isRepeating == true && t.repeatInterval != null) {
+        DateTime lastDate = t.lastRepeatedDate ?? t.date;
+        DateTime nextDate = _calculateNextDate(lastDate, t.repeatInterval!);
+
+        print(
+          "Transaction: ${t.category}, Last Date: $lastDate, Next Expected: $nextDate",
+        );
+
+        while (nextDate.isBefore(now) ||
+            (nextDate.year == now.year &&
+                nextDate.month == now.month &&
+                nextDate.day == now.day)) {
+          // It's time to repeat!
+          final repeatedTransaction = TransactionModel(
+            type: t.type,
+            category: t.category,
+            wallet: t.wallet,
+            budget: t.budget,
+            note: "${t.note} (Repeated)",
+            amount: t.amount,
+            date: nextDate,
+            attachmentPath: t.attachmentPath,
+            isRepeating: false, // Child transaction doesn't repeat
+          );
+
+          newTransactions.add(repeatedTransaction);
+
+          // Update the template's last repeated date
+          t = TransactionModel(
+            type: t.type,
+            category: t.category,
+            wallet: t.wallet,
+            budget: t.budget,
+            note: t.note,
+            amount: t.amount,
+            date: t.date,
+            attachmentPath: t.attachmentPath,
+            isRepeating: true,
+            repeatInterval: t.repeatInterval,
+            lastRepeatedDate: nextDate,
+          );
+          transactions[i] = t;
+
+          updated = true;
+
+          print("REPEATING: ${t.category} due for $nextDate");
+
+          // Show notification
+          NotificationService.showNotification(
+            "Transaction Repeated",
+            "A recurring ${t.type.toLowerCase()} of ${t.amount} for ${t.category} has been added.",
+          );
+
+          // Calculate next occurrence
+          nextDate = _calculateNextDate(nextDate, t.repeatInterval!);
+        }
+      }
+    }
+
+    if (updated) {
+      transactions.addAll(newTransactions);
+      // Logic for updating wallet/budget balance for new transactions
+      for (var nt in newTransactions) {
+        _updateBalancesForRecurring(nt);
+      }
+    }
+  }
+
+  DateTime _calculateNextDate(DateTime from, String interval) {
+    switch (interval) {
+      case "Every day":
+        return from.add(const Duration(days: 1));
+      case "Every 2 days":
+        return from.add(const Duration(days: 2));
+      case "Every work day":
+        DateTime next = from.add(const Duration(days: 1));
+        while (next.weekday == DateTime.saturday ||
+            next.weekday == DateTime.sunday) {
+          next = next.add(const Duration(days: 1));
+        }
+        return next;
+      case "Every week":
+        return from.add(const Duration(days: 7));
+      case "Every 2 weeks":
+        return from.add(const Duration(days: 14));
+      case "Every 4 weeks":
+        return from.add(const Duration(days: 28));
+      case "Every month":
+        return DateTime(from.year, from.month + 1, from.day);
+      case "Every 2 months":
+        return DateTime(from.year, from.month + 2, from.day);
+      case "Every 4 months":
+        return DateTime(from.year, from.month + 4, from.day);
+      default:
+        return from.add(const Duration(days: 1));
+    }
+  }
+
+  void _updateBalancesForRecurring(TransactionModel transaction) {
+    // Update Wallet Balance
+    final walletController = Get.find<CreateWalletController>();
+    final selectedWalletIndex = walletController.wallets.indexWhere(
+      (w) => w.name == transaction.wallet,
+    );
+
+    if (selectedWalletIndex != -1) {
+      final oldWallet = walletController.wallets[selectedWalletIndex];
+      final newBalance = transaction.type == "Income"
+          ? oldWallet.balance + transaction.amount
+          : oldWallet.balance - transaction.amount;
+      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
+        balance: newBalance,
+      );
+    }
+
+    // Update Budget Spent (only for expenses)
+    if (transaction.type == "Expense") {
+      final budgetController = Get.find<CreateBudgetController>();
+      final selectedBudgetIndex = budgetController.budgets.indexWhere(
+        (b) => b.category == transaction.budget,
+      );
+      if (selectedBudgetIndex != -1) {
+        final oldBudget = budgetController.budgets[selectedBudgetIndex];
+        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
+          spent: oldBudget.spent + transaction.amount,
+        );
+      }
     }
   }
 }

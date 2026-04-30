@@ -25,13 +25,16 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       amount: fields[5] as double,
       date: fields[6] as DateTime,
       attachmentPath: fields[7] as String?,
+      isRepeating: fields[8] as bool?,
+      repeatInterval: fields[9] as String?,
+      lastRepeatedDate: fields[10] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TransactionModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -47,7 +50,13 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       ..writeByte(6)
       ..write(obj.date)
       ..writeByte(7)
-      ..write(obj.attachmentPath);
+      ..write(obj.attachmentPath)
+      ..writeByte(8)
+      ..write(obj.isRepeating)
+      ..writeByte(9)
+      ..write(obj.repeatInterval)
+      ..writeByte(10)
+      ..write(obj.lastRepeatedDate);
   }
 
   @override

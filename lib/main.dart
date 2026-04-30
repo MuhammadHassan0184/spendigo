@@ -26,10 +26,12 @@ void main() async {
   print("Starting Firebase init...");
 
   try {
-    await Firebase.initializeApp(  
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    print("Firebase initialized SUCCESSFULLY!");
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      print("Firebase initialized SUCCESSFULLY!");
+    }
   } catch (e) {
     print("Firebase Init Error: $e");
   }
@@ -46,9 +48,7 @@ void main() async {
   Hive.registerAdapter(NotificationModelAdapter());
 
   // Open Boxes
-  await Hive.openBox<TransactionModel>(
-    'transactions',
-  );
+  await Hive.openBox<TransactionModel>('transactions');
   await Hive.openBox<WalletModel>('wallets');
   await Hive.openBox<BudgetModel>('budgets');
   await Hive.openBox<NotificationModel>('notifications');

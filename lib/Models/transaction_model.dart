@@ -22,6 +22,15 @@ class TransactionModel {
   @HiveField(7)
   final String? attachmentPath;
 
+  @HiveField(8)
+  final bool? isRepeating;
+
+  @HiveField(9)
+  final String? repeatInterval;
+
+  @HiveField(10)
+  final DateTime? lastRepeatedDate;
+
   TransactionModel({
     required this.type,
     required this.category,
@@ -31,5 +40,8 @@ class TransactionModel {
     required this.amount,
     required this.date,
     this.attachmentPath,
+    this.isRepeating = false,
+    this.repeatInterval,
+    this.lastRepeatedDate,
   });
 }
