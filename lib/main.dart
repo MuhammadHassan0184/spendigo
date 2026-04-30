@@ -24,7 +24,7 @@ void main() async {
   print("Starting Firebase init...");
 
   try {
-    await Firebase.initializeApp(
+    await Firebase.initializeApp(  
       options: DefaultFirebaseOptions.currentPlatform,
     );
     print("Firebase initialized SUCCESSFULLY!");
@@ -34,14 +34,18 @@ void main() async {
 
   // Initialize Hive
   await Hive.initFlutter(); // Prepares the device's local path for storage.
-  
+
   // Register Adapters
-  Hive.registerAdapter(TransactionModelAdapter()); // Tells Hive which custom models to expect. Without this, Hive wouldn't know how to read your WalletModel.
+  Hive.registerAdapter(
+    TransactionModelAdapter(),
+  ); // Tells Hive which custom models to expect. Without this, Hive wouldn't know how to read your WalletModel.
   Hive.registerAdapter(WalletModelAdapter());
   Hive.registerAdapter(BudgetModelAdapter());
-  
+
   // Open Boxes
-  await Hive.openBox<TransactionModel>('transactions'); // This is like opening a specific Excel sheet where you store all transactions.
+  await Hive.openBox<TransactionModel>(
+    'transactions',
+  ); // This is like opening a specific Excel sheet where you store all transactions.
   await Hive.openBox<WalletModel>('wallets');
   await Hive.openBox<BudgetModel>('budgets');
   await Hive.openBox('settings');
