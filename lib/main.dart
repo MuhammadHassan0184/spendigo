@@ -15,6 +15,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/Models/budget_model.dart';
+import 'package:spendigo/Models/notification_model.dart';
+import 'package:spendigo/controller/notification_controller.dart';
 import 'package:spendigo/services/notification_service.dart';
 
 void main() async {
@@ -41,13 +43,15 @@ void main() async {
   ); // Tells Hive which custom models to expect. Without this, Hive wouldn't know how to read your WalletModel.
   Hive.registerAdapter(WalletModelAdapter());
   Hive.registerAdapter(BudgetModelAdapter());
+  Hive.registerAdapter(NotificationModelAdapter());
 
   // Open Boxes
   await Hive.openBox<TransactionModel>(
     'transactions',
-  ); // This is like opening a specific Excel sheet where you store all transactions.
+  );
   await Hive.openBox<WalletModel>('wallets');
   await Hive.openBox<BudgetModel>('budgets');
+  await Hive.openBox<NotificationModel>('notifications');
   await Hive.openBox('settings');
 
   runApp(const MyApp());
@@ -91,5 +95,6 @@ class GlobalBinding extends Bindings {
     Get.put(AddTransactionController(), permanent: true);
     Get.put(CreateBudgetController(), permanent: true);
     Get.put(CurrencyController(), permanent: true);
+    Get.put(NotificationController(), permanent: true);
   }
 }

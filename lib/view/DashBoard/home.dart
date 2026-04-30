@@ -7,6 +7,7 @@ import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/controller/currency_controller.dart';
+import 'package:spendigo/controller/notification_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 import 'package:spendigo/view/TranscationHistory/transaction_details.dart';
@@ -84,18 +85,56 @@ class Home extends StatelessWidget {
                                 ],
                               ),
 
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white10,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  Icons.notifications_none,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              /// notification icon
+                              Obx(() {
+                                final notifCtrl = Get.find<NotificationController>();
+                                final count = notifCtrl.unreadCount;
+                                return GestureDetector(
+                                  onTap: () => Get.toNamed(AppRoutesName.notificationHistory),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white10,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Icon(
+                                          Icons.notifications_none,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      if (count > 0)
+                                        Positioned(
+                                          top: -5,
+                                          right: -5,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(3),
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFFFF6B6B),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 18,
+                                              minHeight: 18,
+                                            ),
+                                            child: Text(
+                                              count > 99 ? '99+' : '$count',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              }),
                             ],
                           ),
                         ],

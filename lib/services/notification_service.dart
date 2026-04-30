@@ -1,4 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+import 'package:spendigo/controller/notification_controller.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications =
@@ -38,5 +40,10 @@ class NotificationService {
       body,
       details,
     );
+
+    // Persist to in-app notification history
+    if (Get.isRegistered<NotificationController>()) {
+      await Get.find<NotificationController>().addNotification(title, body);
+    }
   }
 }

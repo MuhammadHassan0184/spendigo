@@ -20,6 +20,7 @@ import 'package:spendigo/view/profile/report_feedback.dart';
 import 'package:spendigo/view/statistics/statistics_screen.dart';
 import 'package:spendigo/view/wallets/create_wallet.dart';
 import 'package:spendigo/view/wallets/wallet_screen.dart';
+import 'package:spendigo/view/Notifications/notification_history_screen.dart';
 
 class AppRoutes {
   // ignore: strict_top_level_inference
@@ -44,6 +45,7 @@ class AppRoutes {
     GetPage(name: AppRoutesName.createBudget, page: () => CreateBudget()),
     GetPage(name: AppRoutesName.reportFeedback, page: () => ReportFeedback()),
     GetPage(name: AppRoutesName.privacyPolicyScreen, page: () => PrivacyPolicyScreen()),
+    GetPage(name: AppRoutesName.notificationHistory, page: () => NotificationHistoryScreen()),
 
 
   ];
