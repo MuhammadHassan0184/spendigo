@@ -8,6 +8,7 @@ class CreateBudgetController extends GetxController {
   var sliderValue = 0.0.obs;
   var receiveAlert = true.obs;
   var selectedCategory = RxnString();
+  var editingIndex = RxnInt();
 
   final TextEditingController amountController = TextEditingController();
 
@@ -59,6 +60,26 @@ class CreateBudgetController extends GetxController {
     });
   }
 
+  void initForEdit(BudgetModel b, int index) {
+    editingIndex.value = index;
+    selectedCategory.value = b.category;
+    amountController.text = b.total.toStringAsFixed(0);
+    receiveAlert.value = b.receiveAlert;
+    sliderValue.value = b.alertPercentage;
+    if (b.total > maxSliderAmount.value) {
+      maxSliderAmount.value = b.total;
+    }
+  }
+
+  void clearFields() {
+    editingIndex.value = null;
+    selectedCategory.value = null;
+    amountController.text = "0";
+    sliderValue.value = 0.0;
+    maxSliderAmount.value = 50000.0;
+    receiveAlert.value = true;
+  }
+
   void updateSliderFromAmount(String value) {
     final amount = double.tryParse(value) ?? 0.0;
 
@@ -89,19 +110,25 @@ class CreateBudgetController extends GetxController {
       total: budgetAmount,
       receiveAlert: receiveAlert.value,
       alertPercentage: sliderValue.value,
+      spent: editingIndex.value != null
+          ? budgets[editingIndex.value!].spent
+          : 0.0,
     );
 
-    budgets.add(newBudget);
+    if (editingIndex.value != null) {
+      budgets[editingIndex.value!] = newBudget;
+    } else {
+      budgets.add(newBudget);
+    }
 
-    // Reset fields
-    selectedCategory.value = null;
-    amountController.text = "0";
-    sliderValue.value = 0.0;
-    maxSliderAmount.value = 50000.0; // Reset max
-    receiveAlert.value = true;
+    final isEditing = editingIndex.value != null;
+    clearFields();
 
     Get.back();
-    showCustomSnackBar("Success", "Budget created successfully");
+    showCustomSnackBar(
+      "Success",
+      isEditing ? "Budget updated successfully" : "Budget created successfully",
+    );
   }
 
   @override

@@ -19,7 +19,9 @@ class CreateBudget extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
-        title: "Create Budget",
+        title: controller.editingIndex.value != null
+            ? "Update Budget"
+            : "Create Budget",
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -55,7 +57,9 @@ class CreateBudget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Obx(() {
-                                final cur = Get.find<CurrencyController>().selectedCurrency.value;
+                                final cur = Get.find<CurrencyController>()
+                                    .selectedCurrency
+                                    .value;
                                 return Text(
                                   '$cur ',
                                   style: const TextStyle(
@@ -222,11 +226,15 @@ class CreateBudget extends StatelessWidget {
                           const SizedBox(height: 20),
 
                           /// 🔹 Button
-                          CustomButton(
-                            text: "Create Budget",
-                            onPressed: () {
-                              controller.createBudget();
-                            },
+                          Obx(
+                            () => CustomButton(
+                              text: controller.editingIndex.value != null
+                                  ? "Update Budget"
+                                  : "Create Budget",
+                              onPressed: () {
+                                controller.createBudget();
+                              },
+                            ),
                           ),
                         ],
                       ),
