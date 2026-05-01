@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spendigo/config/colors.dart';
@@ -6,12 +8,14 @@ class WalletTile extends StatelessWidget {
   final String amount;
   final String title;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const WalletTile({
     super.key,
     required this.amount,
     required this.title,
     this.onTap,
+    this.onLongPress,
   });
 
   @override
@@ -25,6 +29,7 @@ class WalletTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
+        onLongPress: onLongPress,
         leading: Container(
           padding: const EdgeInsets.all(10),
           height: 48,

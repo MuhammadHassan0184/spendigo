@@ -58,6 +58,9 @@ class WalletScreen extends StatelessWidget {
                         controller.initForEdit(wallet, index);
                         Get.toNamed(AppRoutesName.createWallet);
                       },
+                      onLongPress: () {
+                        _showDeleteDialog(controller, index, wallet.name);
+                      },
                     ),
                   );
                 }).toList(),
@@ -71,6 +74,114 @@ class WalletScreen extends StatelessWidget {
           controller.clearFields();
           Get.toNamed(AppRoutesName.createWallet);
         },
+      ),
+    );
+  }
+
+  void _showDeleteDialog(
+    CreateWalletController controller,
+    int index,
+    String walletName,
+  ) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 🔴 Icon
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.delete, color: Colors.red, size: 28),
+              ),
+
+              const SizedBox(height: 15),
+
+              // 📝 Title
+              const Text(
+                "Delete Wallet",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // 📄 Description
+              Text(
+                "Are you sure you want to delete '$walletName'?",
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+
+              const SizedBox(height: 20),
+
+              // 🔘 Buttons
+              Row(
+                children: [
+                  // Cancel Button
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  // Delete Button
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF6B6B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Get.back(); // close dialog first
+
+                        controller.deleteWallet(index);
+
+                        // optional delay (same as your transaction dialog)
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          // agar navigation chahiye ho to yahan add karo
+                        });
+                      },
+                      child: const Text(
+                        "Delete",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/Models/transaction_model.dart';
+
 class CreateWalletController extends GetxController {
   var sliderValue = 0.0.obs;
   var receiveAlert = true.obs;
@@ -31,7 +32,7 @@ class CreateWalletController extends GetxController {
     if (_box.isNotEmpty) {
       wallets.assignAll(_box.values.toList());
     }
-    
+
     // Sync slider -> amount
     ever(sliderValue, (double val) {
       final amount = val * (maxSliderAmount / 100);
@@ -69,7 +70,8 @@ class CreateWalletController extends GetxController {
     sliderValue.value = newValue.clamp(0.0, 100.0);
   }
 
-  double get totalWealth => wallets.fold(0.0, (sum, wallet) => sum + wallet.balance);
+  double get totalWealth =>
+      wallets.fold(0.0, (sum, wallet) => sum + wallet.balance);
 
   double get budgetAmount => double.tryParse(amountController.text) ?? 0.0;
 
@@ -94,15 +96,15 @@ class CreateWalletController extends GetxController {
     if (editingIndex.value != null) {
       // Editing existing wallet
       wallets[editingIndex.value!] = newWallet;
-      
-      // We might want to adjust the transactions if balance changed? 
-      // The prompt asks "if user change anything wallet update", 
-      // let's just update the wallet model. The initial transaction might be mismatched, 
+
+      // We might want to adjust the transactions if balance changed?
+      // The prompt asks "if user change anything wallet update",
+      // let's just update the wallet model. The initial transaction might be mismatched,
       // but matching the exact logic the user wants for now.
     } else {
       // Creating new wallet
       wallets.add(newWallet);
-      
+
       // Add income transaction for the initial balance so it reflects in the transaction list
       if (budgetAmount > 0) {
         if (Get.isRegistered<AddTransactionController>()) {
@@ -120,11 +122,21 @@ class CreateWalletController extends GetxController {
         }
       }
     }
-    
+
     clearFields();
 
     Get.back();
-    showCustomSnackBar("Success", editingIndex.value != null ? "Wallet updated successfully" : "Wallet added successfully");
+    showCustomSnackBar(
+      "Success",
+      editingIndex.value != null
+          ? "Wallet updated successfully"
+          : "Wallet added successfully",
+    );
+  }
+
+  void deleteWallet(int index) {
+    wallets.removeAt(index);
+    showCustomSnackBar("Success", "Wallet deleted successfully");
   }
 
   @override
