@@ -9,6 +9,7 @@ import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/services/hive_service.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -105,6 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // logout Button
               GestureDetector(
                 onTap: () async {
+                  HiveService.clearAllControllers(); // Clear UI state before firebase logout
                   await _authService.logout(); // logout from firebase
                   print("After logout: ${FirebaseAuth.instance.currentUser}");
                   Get.offAllNamed(

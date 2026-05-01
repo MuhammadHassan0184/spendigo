@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/Models/budget_model.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CreateBudgetController extends GetxController {
   var sliderValue = 0.0.obs;
@@ -26,7 +27,11 @@ class CreateBudgetController extends GetxController {
   // Observable list of budgets
   var budgets = <BudgetModel>[].obs;
 
-  final _box = Hive.box<BudgetModel>('budgets');
+  Box<BudgetModel> get _box {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return Hive.box<BudgetModel>('budgets_$uid');
+  }
+
   var maxSliderAmount = 50000.0.obs;
 
   @override
@@ -34,9 +39,8 @@ class CreateBudgetController extends GetxController {
     super.onInit();
     amountController.text = "0";
 
-    // Load from Hive
-    if (_box.isNotEmpty) {
-      budgets.assignAll(_box.values.toList());
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadBudgets();
     }
 
     // Sync slider -> amount
@@ -47,17 +51,39 @@ class CreateBudgetController extends GetxController {
       }
     });
 
-    // We also need to listen to maxSliderAmount changes to keep amount in sync if slider moves
+    // Listen to maxSliderAmount changes
     ever(maxSliderAmount, (double max) {
       final amount = sliderValue.value * (max / 100);
       amountController.text = amount.toStringAsFixed(0);
     });
+  }
 
-    // Save to Hive whenever budgets list changes
-    ever(budgets, (List<BudgetModel> list) {
-      _box.clear();
-      _box.addAll(list);
-    });
+  void loadBudgets() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('budgets_$uid')) {
+      budgets.assignAll(_box.values.toList());
+    }
+  }
+
+  Future<void> addBudgetToHive(BudgetModel budget) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('budgets_$uid')) {
+      await _box.add(budget);
+    }
+  }
+
+  Future<void> updateBudgetInHive(int index, BudgetModel budget) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('budgets_$uid')) {
+      await _box.putAt(index, budget);
+    }
+  }
+
+  Future<void> deleteBudgetFromHive(int index) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('budgets_$uid')) {
+      await _box.deleteAt(index);
+    }
   }
 
   void initForEdit(BudgetModel b, int index) {
@@ -82,19 +108,16 @@ class CreateBudgetController extends GetxController {
 
   void updateSliderFromAmount(String value) {
     final amount = double.tryParse(value) ?? 0.0;
-
-    // If entered amount is greater than current max, increase max
     if (amount > maxSliderAmount.value) {
       maxSliderAmount.value = amount;
     }
-
     final newValue = (amount / maxSliderAmount.value) * 100;
     sliderValue.value = newValue.clamp(0.0, 100.0);
   }
 
   double get budgetAmount => double.tryParse(amountController.text) ?? 0.0;
 
-  void createBudget() {
+  Future<void> createBudget() async {
     if (selectedCategory.value == null) {
       showCustomSnackBar("Error", "Please select a category", isError: true);
       return;
@@ -116,9 +139,12 @@ class CreateBudgetController extends GetxController {
     );
 
     if (editingIndex.value != null) {
-      budgets[editingIndex.value!] = newBudget;
+      final index = editingIndex.value!;
+      budgets[index] = newBudget;
+      await updateBudgetInHive(index, newBudget);
     } else {
       budgets.add(newBudget);
+      await addBudgetToHive(newBudget);
     }
 
     final isEditing = editingIndex.value != null;
@@ -129,6 +155,12 @@ class CreateBudgetController extends GetxController {
       "Success",
       isEditing ? "Budget updated successfully" : "Budget created successfully",
     );
+  }
+
+  Future<void> deleteBudget(int index) async {
+    await deleteBudgetFromHive(index);
+    budgets.removeAt(index);
+    showCustomSnackBar("Success", "Budget deleted successfully");
   }
 
   @override

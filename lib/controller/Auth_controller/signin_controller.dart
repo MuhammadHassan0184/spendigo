@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/services/hive_service.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class SigninController extends GetxController {
@@ -18,7 +18,11 @@ class SigninController extends GetxController {
     String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showCustomSnackBar("Error", "Please enter email and password", isError: true);
+      showCustomSnackBar(
+        "Error",
+        "Please enter email and password",
+        isError: true,
+      );
       return;
     }
 
@@ -30,7 +34,13 @@ class SigninController extends GetxController {
       isLoading.value = false;
 
       if (userCredential.user != null) {
-        showCustomSnackBar("Success", "Welcome back ${userCredential.user!.email}");
+        showCustomSnackBar(
+          "Success",
+          "Welcome back ${userCredential.user!.email}",
+        );
+
+        await HiveService.openUserBoxes(userCredential.user!.uid);
+        HiveService.refreshAllControllers();
 
         Get.offAllNamed(AppRoutesName.mainScreen);
       }

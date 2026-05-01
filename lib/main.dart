@@ -47,19 +47,10 @@ void main() async {
   Hive.registerAdapter(BudgetModelAdapter());
   Hive.registerAdapter(NotificationModelAdapter());
 
-  // Open Boxes
-  await Hive.openBox<TransactionModel>('transactions');
-  await Hive.openBox<WalletModel>('wallets');
-  await Hive.openBox<BudgetModel>('budgets');
-  await Hive.openBox<NotificationModel>('notifications');
   await Hive.openBox('settings');
 
   runApp(const MyApp());
 }
-
-// void main() {
-//   runApp(const MyApp());
-// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
+import 'package:spendigo/services/hive_service.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -35,7 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
       // Onboarding completed, check auth
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // User is logged in, go to home
+        // User is logged in, open boxes then go to home
+        await HiveService.openUserBoxes(user.uid);
+        HiveService.refreshAllControllers(); // Ensure data is loaded into controllers
         Get.offAllNamed(AppRoutesName.mainScreen);
       } else {
         // User not logged in, go to sign in

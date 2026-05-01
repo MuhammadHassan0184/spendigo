@@ -8,7 +8,6 @@ import 'package:spendigo/controller/currency_controller.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 import 'package:spendigo/widgets/custom_button.dart';
 import 'package:spendigo/widgets/custom_textfield.dart';
-import 'package:spendigo/services/notification_service.dart';
 
 class CreateWallet extends StatelessWidget {
   const CreateWallet({super.key});

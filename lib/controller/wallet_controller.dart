@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/Models/wallet_model.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spendigo/controller/transaction_controller.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 
@@ -18,19 +19,20 @@ class CreateWalletController extends GetxController {
 
   final double maxSliderAmount = 100000.0;
 
-  final _box = Hive.box<WalletModel>('wallets');
+  Box<WalletModel> get _box {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return Hive.box<WalletModel>('wallets_$uid');
+  }
 
   var editingIndex = RxnInt();
 
   @override
   void onInit() {
     super.onInit();
-    // Default value set to 0 as requested
     amountController.text = "0";
 
-    // Load from Hive
-    if (_box.isNotEmpty) {
-      wallets.assignAll(_box.values.toList());
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadWallets();
     }
 
     // Sync slider -> amount
@@ -40,12 +42,34 @@ class CreateWalletController extends GetxController {
         amountController.text = amount.toStringAsFixed(0);
       }
     });
+  }
 
-    // Save to Hive whenever wallets list changes
-    ever(wallets, (List<WalletModel> list) {
-      _box.clear();
-      _box.addAll(list);
-    });
+  void loadWallets() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('wallets_$uid')) {
+      wallets.assignAll(_box.values.toList());
+    }
+  }
+
+  Future<void> addWalletToHive(WalletModel wallet) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('wallets_$uid')) {
+      await _box.add(wallet);
+    }
+  }
+
+  Future<void> updateWalletInHive(int index, WalletModel wallet) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('wallets_$uid')) {
+      await _box.putAt(index, wallet);
+    }
+  }
+
+  Future<void> deleteWalletFromHive(int index) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('wallets_$uid')) {
+      await _box.deleteAt(index);
+    }
   }
 
   void initForEdit(WalletModel w, int index) {
@@ -75,7 +99,7 @@ class CreateWalletController extends GetxController {
 
   double get budgetAmount => double.tryParse(amountController.text) ?? 0.0;
 
-  void createWallet() {
+  Future<void> createWallet() async {
     if (nameController.text.isEmpty) {
       showCustomSnackBar("Error", "Please enter a wallet name", isError: true);
       return;
@@ -94,18 +118,13 @@ class CreateWalletController extends GetxController {
     );
 
     if (editingIndex.value != null) {
-      // Editing existing wallet
-      wallets[editingIndex.value!] = newWallet;
-
-      // We might want to adjust the transactions if balance changed?
-      // The prompt asks "if user change anything wallet update",
-      // let's just update the wallet model. The initial transaction might be mismatched,
-      // but matching the exact logic the user wants for now.
+      final index = editingIndex.value!;
+      wallets[index] = newWallet;
+      await updateWalletInHive(index, newWallet);
     } else {
-      // Creating new wallet
       wallets.add(newWallet);
+      await addWalletToHive(newWallet);
 
-      // Add income transaction for the initial balance so it reflects in the transaction list
       if (budgetAmount > 0) {
         if (Get.isRegistered<AddTransactionController>()) {
           final transController = Get.find<AddTransactionController>();
@@ -118,13 +137,13 @@ class CreateWalletController extends GetxController {
             amount: budgetAmount,
             date: DateTime.now(),
           );
-          transController.transactions.add(initialTransaction);
+          // Directly add to Hive and list in TransactionController
+          await transController.addTransactionManually(initialTransaction);
         }
       }
     }
 
     clearFields();
-
     Get.back();
     showCustomSnackBar(
       "Success",
@@ -134,7 +153,8 @@ class CreateWalletController extends GetxController {
     );
   }
 
-  void deleteWallet(int index) {
+  Future<void> deleteWallet(int index) async {
+    await deleteWalletFromHive(index);
     wallets.removeAt(index);
     showCustomSnackBar("Success", "Wallet deleted successfully");
   }

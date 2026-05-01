@@ -1,22 +1,30 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CurrencyController extends GetxController {
   var selectedCurrency = "Rs.".obs;
 
   final List<String> currencies = ["Rs.", "\$", "€", "£", "¥", "₩"];
 
-  late Box _box;
+  Box get _box {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return Hive.box('settings_$uid');
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _box = Hive.box('settings');
-    loadCurrency();
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadCurrency();
+    }
   }
 
   void loadCurrency() {
-    selectedCurrency.value = _box.get('currency', defaultValue: "Rs.");
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('settings_$uid')) {
+      selectedCurrency.value = _box.get('currency', defaultValue: "Rs.");
+    }
   }
 
   void changeCurrency(String currency) {

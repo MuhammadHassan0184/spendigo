@@ -26,6 +26,7 @@
 import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/auth_service.dart';
+import 'package:spendigo/services/hive_service.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class GoogleLoginController {
@@ -35,6 +36,8 @@ class GoogleLoginController {
   final user = await _authService.signInWithGoogle();
 
   if (user != null) {
+    await HiveService.openUserBoxes(user.uid);
+    HiveService.refreshAllControllers();
     Get.offAllNamed(AppRoutesName.mainScreen);
   } else {
     showCustomSnackBar(

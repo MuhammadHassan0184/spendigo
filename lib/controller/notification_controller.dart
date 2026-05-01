@@ -1,23 +1,32 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spendigo/Models/notification_model.dart';
 
 class NotificationController extends GetxController {
   var notifications = <NotificationModel>[].obs;
-  late Box<NotificationModel> _box;
+  
+  Box<NotificationModel> get _box {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return Hive.box<NotificationModel>('notifications_$uid');
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _box = Hive.box<NotificationModel>('notifications');
-    _loadNotifications();
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadNotifications();
+    }
   }
 
-  void _loadNotifications() {
-    // Load in reverse-chronological order (newest first)
-    final items = _box.values.toList();
-    items.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-    notifications.assignAll(items);
+  void loadNotifications() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('notifications_$uid')) {
+      // Load in reverse-chronological order (newest first)
+      final items = _box.values.toList();
+      items.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      notifications.assignAll(items);
+    }
   }
 
   Future<void> addNotification(String title, String body) async {

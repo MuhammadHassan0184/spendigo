@@ -1,11 +1,9 @@
-
 import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/view/Auth/ForgotPassword/forgot_password.dart';
 import 'package:spendigo/view/Auth/sign_in.dart';
 import 'package:spendigo/view/Auth/sign_up.dart';
 import 'package:spendigo/view/DashBoard/add_transaction.dart';
-import 'package:spendigo/view/DashBoard/home.dart';
 import 'package:spendigo/view/DashBoard/main_screen.dart';
 import 'package:spendigo/view/TranscationHistory/transaction_history.dart';
 import 'package:spendigo/view/Splash/splash_screen.dart';

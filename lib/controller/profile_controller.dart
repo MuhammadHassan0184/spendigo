@@ -77,11 +77,14 @@ class ProfileController extends GetxController {
   /// PICK IMAGE
   /// =========================
   Future pickImage() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked == null) return;
 
     final directory = await getApplicationDocumentsDirectory();
-    final imagePath = File('${directory.path}/profile.png');
+    final imagePath = File('${directory.path}/profile_${user.uid}.png');
 
     final newImage = await File(picked.path).copy(imagePath.path);
     image.value = newImage;
@@ -91,11 +94,16 @@ class ProfileController extends GetxController {
   /// LOAD IMAGE
   /// =========================
   Future loadImage() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     final directory = await getApplicationDocumentsDirectory();
-    final imagePath = File('${directory.path}/profile.png');
+    final imagePath = File('${directory.path}/profile_${user.uid}.png');
 
     if (await imagePath.exists()) {
       image.value = imagePath;
+    } else {
+      image.value = null; // Ensure it's null if file doesn't exist for this user
     }
   }
 
@@ -103,8 +111,11 @@ class ProfileController extends GetxController {
   /// DELETE IMAGE
   /// =========================
   Future deleteImage() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     final directory = await getApplicationDocumentsDirectory();
-    final imagePath = File('${directory.path}/profile.png');
+    final imagePath = File('${directory.path}/profile_${user.uid}.png');
 
     if (await imagePath.exists()) {
       await imagePath.delete();

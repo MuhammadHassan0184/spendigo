@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/Models/transaction_model.dart';
 import 'package:spendigo/Models/wallet_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/controller/wallet_controller.dart';
 import 'package:spendigo/controller/budget_controller.dart';
@@ -70,18 +71,19 @@ class AddTransactionController extends GetxController
   // Observable list of transactions
   var transactions = <TransactionModel>[].obs;
 
-  final _box = Hive.box<TransactionModel>('transactions');
+  Box<TransactionModel> get _box {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return Hive.box<TransactionModel>('transactions_$uid');
+  }
 
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-    loadTransactions();
-
-    // Save to Hive whenever transactions list changes
-    ever(transactions, (List<TransactionModel> list) {
-      _box.clear().then((_) => _box.addAll(list));
-    });
+    
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadTransactions();
+    }
 
     // Check for recurring transactions on startup
     checkAndProcessRecurringTransactions();
@@ -101,7 +103,8 @@ class AddTransactionController extends GetxController
   }
 
   void loadTransactions() {
-    if (_box.isNotEmpty) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('transactions_$uid')) {
       transactions.assignAll(_box.values.toList());
     }
   }
@@ -128,7 +131,7 @@ class AddTransactionController extends GetxController
     }
   }
 
-  void addTransaction() {
+  Future<void> addTransaction() async {
     final amount = double.tryParse(amountController.text) ?? 0.0;
 
     if (amount <= 0) {
@@ -159,11 +162,11 @@ class AddTransactionController extends GetxController
 
     // If we are editing, remove the old one first
     if (transactionToEdit.value != null) {
-      // Silence the "Deleted successfully" snackbar during edit
-      _deleteSilently(transactionToEdit.value!);
+      await _deleteSilently(transactionToEdit.value!);
     }
 
-    // 1. Add to transactions list
+    // 1. Add to Hive and local list
+    await _box.add(transaction);
     transactions.add(transaction);
 
     // 2. Update Wallet Balance
@@ -177,21 +180,17 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance + transaction.amount
           : oldWallet.balance - transaction.amount;
-      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
-        balance: newBalance,
-      );
+      
+      final updatedWallet = oldWallet.copyWith(balance: newBalance);
+      walletController.wallets[selectedWalletIndex] = updatedWallet;
+      
+      // Persist wallet change
+      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
 
       // Low Balance Notification Check
       if (transaction.type == "Expense" && oldWallet.receiveAlert) {
-        // Calculate the alert threshold based on the initial balance.
-        // Since sliderValue (alertPercentage) maps to the initial balance:
-        // initialBalance = oldWallet.alertPercentage * (100000 / 100)
         final initialBalance = oldWallet.alertPercentage * 1000.0;
-
-        // Let's alert when balance drops below 20% of the initial balance
-        // You can change this 0.2 multiplier to your preferred threshold
         final threshold = initialBalance * 0.2;
-
         if (newBalance <= threshold && oldWallet.balance > threshold) {
           NotificationService.showNotification(
             'Low Balance Alert!',
@@ -200,7 +199,6 @@ class AddTransactionController extends GetxController
         }
       }
     } else {
-      // If no wallet exists with this name, create a new one automatically
       final newWallet = WalletModel(
         name: transaction.wallet,
         balance: transaction.type == "Income"
@@ -210,6 +208,7 @@ class AddTransactionController extends GetxController
         alertPercentage: 0,
       );
       walletController.wallets.add(newWallet);
+      await walletController.addWalletToHive(newWallet);
     }
 
     // 3. Update Budget Spent (only for expenses)
@@ -221,16 +220,17 @@ class AddTransactionController extends GetxController
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
         final newSpent = oldBudget.spent + transaction.amount;
-        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
-          spent: newSpent,
-        );
+        
+        final updatedBudget = oldBudget.copyWith(spent: newSpent);
+        budgetController.budgets[selectedBudgetIndex] = updatedBudget;
+        
+        // Persist budget change
+        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
 
         // Budget Low Alert Notification
         if (oldBudget.receiveAlert && oldBudget.total > 0) {
           final threshold = oldBudget.total * (oldBudget.alertPercentage / 100);
           final oldSpent = oldBudget.spent;
-
-          // Fire only when the threshold is crossed (not on every expense)
           if (newSpent >= threshold && oldSpent < threshold) {
             NotificationService.showNotification(
               'Budget Alert: ${oldBudget.category}',
@@ -254,7 +254,15 @@ class AddTransactionController extends GetxController
     transactionToEdit.value = null;
   }
 
-  void deleteTransaction(TransactionModel transaction) {
+  Future<void> addTransactionManually(TransactionModel transaction) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null && Hive.isBoxOpen('transactions_$uid')) {
+      await _box.add(transaction);
+      transactions.add(transaction);
+    }
+  }
+
+  Future<void> deleteTransaction(TransactionModel transaction) async {
     // 1. Reverse Wallet Balance
     final walletController = Get.find<CreateWalletController>();
     final selectedWalletIndex = walletController.wallets.indexWhere(
@@ -266,9 +274,10 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance - transaction.amount
           : oldWallet.balance + transaction.amount;
-      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
-        balance: newBalance,
-      );
+      
+      final updatedWallet = oldWallet.copyWith(balance: newBalance);
+      walletController.wallets[selectedWalletIndex] = updatedWallet;
+      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
     }
 
     // 2. Reverse Budget Spent (only for expenses)
@@ -279,18 +288,22 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
-          spent: oldBudget.spent - transaction.amount,
-        );
+        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent - transaction.amount);
+        budgetController.budgets[selectedBudgetIndex] = updatedBudget;
+        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
       }
     }
 
-    // 3. Remove from transactions list
-    transactions.remove(transaction);
+    // 3. Remove from transactions Hive and list
+    final index = transactions.indexOf(transaction);
+    if (index != -1) {
+      await _box.deleteAt(index);
+      transactions.removeAt(index);
+    }
     showCustomSnackBar("Success", "Transaction deleted successfully");
   }
 
-  void _deleteSilently(TransactionModel transaction) {
+  Future<void> _deleteSilently(TransactionModel transaction) async {
     // 1. Reverse Wallet Balance
     final walletController = Get.find<CreateWalletController>();
     final selectedWalletIndex = walletController.wallets.indexWhere(
@@ -302,9 +315,10 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance - transaction.amount
           : oldWallet.balance + transaction.amount;
-      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
-        balance: newBalance,
-      );
+      
+      final updatedWallet = oldWallet.copyWith(balance: newBalance);
+      walletController.wallets[selectedWalletIndex] = updatedWallet;
+      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
     }
 
     // 2. Reverse Budget Spent (only for expenses)
@@ -315,14 +329,18 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
-          spent: oldBudget.spent - transaction.amount,
-        );
+        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent - transaction.amount);
+        budgetController.budgets[selectedBudgetIndex] = updatedBudget;
+        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
       }
     }
 
-    // 3. Remove from transactions list
-    transactions.remove(transaction);
+    // 3. Remove from transactions Hive and list
+    final index = transactions.indexOf(transaction);
+    if (index != -1) {
+      await _box.deleteAt(index);
+      transactions.removeAt(index);
+    }
   }
 
   void initForEdit(TransactionModel t) {
@@ -431,8 +449,6 @@ class AddTransactionController extends GetxController
       0.0,
       (sum, b) => sum + b.total,
     );
-    // Since we don't have historical budget data, we use current total budget for current month
-    // and a simulated/historical average for others, or just the same for simplicity in this demo.
     return [
       totalBudget * 0.8,
       totalBudget * 0.9,
@@ -456,16 +472,16 @@ class AddTransactionController extends GetxController
       case "Wallet":
         return "assets/wallet.svg";
       case "Shopping":
-        return "assets/budget.svg"; // Fallback to budget for shopping
+        return "assets/budget.svg";
       default:
-        return "assets/statistics.svg"; // Default icon
+        return "assets/statistics.svg";
     }
   }
 
   Color getCategoryColor(String category) {
     switch (category) {
       case "Salary":
-        return const Color(0xFF25A969); // green
+        return const Color(0xFF25A969);
       case "Pocket Money":
         return Colors.blue;
       case "Entertainment":
@@ -483,7 +499,7 @@ class AddTransactionController extends GetxController
     }
   }
 
-  void checkAndProcessRecurringTransactions() {
+  Future<void> checkAndProcessRecurringTransactions() async {
     print("Checking for recurring transactions...");
     bool updated = false;
     DateTime now = DateTime.now();
@@ -495,15 +511,11 @@ class AddTransactionController extends GetxController
         DateTime lastDate = t.lastRepeatedDate ?? t.date;
         DateTime nextDate = _calculateNextDate(lastDate, t.repeatInterval!);
 
-        print(
-          "Transaction: ${t.category}, Last Date: $lastDate, Next Expected: $nextDate",
-        );
-
         while (nextDate.isBefore(now) ||
             (nextDate.year == now.year &&
                 nextDate.month == now.month &&
                 nextDate.day == now.day)) {
-          // It's time to repeat!
+          
           final repeatedTransaction = TransactionModel(
             type: t.type,
             category: t.category,
@@ -513,12 +525,11 @@ class AddTransactionController extends GetxController
             amount: t.amount,
             date: nextDate,
             attachmentPath: t.attachmentPath,
-            isRepeating: false, // Child transaction doesn't repeat
+            isRepeating: false,
           );
 
           newTransactions.add(repeatedTransaction);
 
-          // Update the template's last repeated date
           t = TransactionModel(
             type: t.type,
             category: t.category,
@@ -532,29 +543,28 @@ class AddTransactionController extends GetxController
             repeatInterval: t.repeatInterval,
             lastRepeatedDate: nextDate,
           );
+          
+          // Update in local list and Hive
           transactions[i] = t;
+          await _box.putAt(i, t);
 
           updated = true;
 
-          print("REPEATING: ${t.category} due for $nextDate");
-
-          // Show notification
           NotificationService.showNotification(
             "Transaction Repeated",
             "A recurring ${t.type.toLowerCase()} of ${t.amount} for ${t.category} has been added.",
           );
 
-          // Calculate next occurrence
           nextDate = _calculateNextDate(nextDate, t.repeatInterval!);
         }
       }
     }
 
     if (updated) {
-      transactions.addAll(newTransactions);
-      // Logic for updating wallet/budget balance for new transactions
       for (var nt in newTransactions) {
-        _updateBalancesForRecurring(nt);
+        await _box.add(nt);
+        transactions.add(nt);
+        await _updateBalancesForRecurring(nt);
       }
     }
   }
@@ -589,8 +599,7 @@ class AddTransactionController extends GetxController
     }
   }
 
-  void _updateBalancesForRecurring(TransactionModel transaction) {
-    // Update Wallet Balance
+  Future<void> _updateBalancesForRecurring(TransactionModel transaction) async {
     final walletController = Get.find<CreateWalletController>();
     final selectedWalletIndex = walletController.wallets.indexWhere(
       (w) => w.name == transaction.wallet,
@@ -601,12 +610,11 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance + transaction.amount
           : oldWallet.balance - transaction.amount;
-      walletController.wallets[selectedWalletIndex] = oldWallet.copyWith(
-        balance: newBalance,
-      );
+      final updatedWallet = oldWallet.copyWith(balance: newBalance);
+      walletController.wallets[selectedWalletIndex] = updatedWallet;
+      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
     }
 
-    // Update Budget Spent (only for expenses)
     if (transaction.type == "Expense") {
       final budgetController = Get.find<CreateBudgetController>();
       final selectedBudgetIndex = budgetController.budgets.indexWhere(
@@ -614,9 +622,9 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        budgetController.budgets[selectedBudgetIndex] = oldBudget.copyWith(
-          spent: oldBudget.spent + transaction.amount,
-        );
+        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent + transaction.amount);
+        budgetController.budgets[selectedBudgetIndex] = updatedBudget;
+        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
       }
     }
   }
