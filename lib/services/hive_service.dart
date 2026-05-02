@@ -36,6 +36,7 @@ class HiveService {
     }
     if (Get.isRegistered<CurrencyController>()) {
       Get.find<CurrencyController>().loadCurrency();
+      Get.find<CurrencyController>().checkHintStatus();
     }
   }
 

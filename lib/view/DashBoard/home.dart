@@ -11,6 +11,8 @@ import 'package:spendigo/controller/notification_controller.dart';
 import 'package:spendigo/widgets/custom_fab.dart';
 import 'package:spendigo/widgets/home_transaction_tile.dart';
 import 'package:spendigo/view/TranscationHistory/transaction_details.dart';
+import 'package:spendigo/widgets/currency_bottom_sheet.dart';
+import 'package:spendigo/widgets/pulse_animation.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -220,28 +222,30 @@ class Home extends StatelessWidget {
                                 Get.find<CurrencyController>();
                             return Row(
                               children: [
-                                PopupMenuButton<String>(
-                                  onSelected: (String value) {
-                                    currencyController.changeCurrency(value);
-                                  },
-                                  itemBuilder: (BuildContext context) {
-                                    return currencyController.currencies.map((
-                                      String choice,
-                                    ) {
-                                      return PopupMenuItem<String>(
-                                        value: choice,
-                                        child: Text(choice),
-                                      );
-                                    }).toList();
-                                  },
-                                  child: Text(
-                                    "${currencyController.selectedCurrency.value} ",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        currencyController.markHintAsSeen();
+                                        showCurrencyBottomSheet(context);
+                                      },
+                                      child: Obx(() {
+                                        final content = Text(
+                                          "${currencyController.selectedCurrency.value} ",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+
+                                        return !currencyController.hasSeenHint.value
+                                            ? PulseAnimation(child: content)
+                                            : content;
+                                      }),
                                     ),
-                                  ),
+                                  ],
                                 ),
                                 Text(
                                   controller.totalBalance.toStringAsFixed(2),
