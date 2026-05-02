@@ -30,18 +30,28 @@ class AddTransactionController extends GetxController
   // Predefined lists
   final List<String> incomeCategories = [
     "Salary",
-    "Pocket Money",
+    "Freelance",
+    "Investment",
     "Business",
+    "Pocket Money",
+    "Rent Income",
     "Gifts",
+    "Bonus",
     "Other Income",
   ];
 
   final List<String> expenseCategories = [
-    "Entertainment",
     "Food & Drink",
     "Shopping",
+    "Transportation",
+    "Rent",
+    "Groceries",
     "Fuel",
+    "Entertainment",
+    "Health & Fitness",
     "Utilities",
+    "Subscriptions",
+    "Education",
     "Other Expense",
   ];
 
@@ -49,7 +59,10 @@ class AddTransactionController extends GetxController
     "Cash",
     "Bank Account",
     "Credit Card",
+    "Savings",
     "Paypal",
+    "Digital Wallet",
+    "Crypto",
   ];
 
   List<String> get wallets {
@@ -467,6 +480,24 @@ class AddTransactionController extends GetxController
         return "assets/entertainment.svg";
       case "Food & Drink":
         return "assets/food.svg";
+      case "Transportation":
+      case "Fuel":
+        return "assets/transport.svg";
+      case "Rent":
+      case "Rent Income":
+        return "assets/home.svg";
+      case "Groceries":
+        return "assets/food.svg";
+      case "Health & Fitness":
+        return "assets/health.svg";
+      case "Subscriptions":
+      case "Education":
+        return "assets/education.svg";
+      case "Investment":
+      case "Freelance":
+      case "Business":
+      case "Bonus":
+        return "assets/salary.svg";
       case "Budget":
         return "assets/budget.svg";
       case "Wallet":
@@ -481,19 +512,35 @@ class AddTransactionController extends GetxController
   Color getCategoryColor(String category) {
     switch (category) {
       case "Salary":
+      case "Bonus":
+      case "Investment":
         return const Color(0xFF25A969);
       case "Pocket Money":
+      case "Freelance":
         return Colors.blue;
       case "Entertainment":
         return Colors.blue.shade300;
       case "Food & Drink":
+      case "Groceries":
         return AppColors.yellowgreen;
       case "Shopping":
         return Colors.orange;
       case "Business":
+      case "Rent Income":
         return Colors.purple;
       case "Gifts":
         return Colors.pink;
+      case "Transportation":
+      case "Fuel":
+        return Colors.cyan;
+      case "Rent":
+        return Colors.brown;
+      case "Health & Fitness":
+        return Colors.redAccent;
+      case "Subscriptions":
+        return Colors.indigo;
+      case "Education":
+        return Colors.teal;
       default:
         return Colors.grey;
     }
