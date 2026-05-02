@@ -6,12 +6,14 @@ class CustomListTile extends StatelessWidget {
   final String title;
   final String? svgPath;
   final VoidCallback? onTap;
+  final Color? iconColor;
 
   const CustomListTile({
     super.key,
     required this.title,
     this.svgPath,
     this.onTap,
+    this.iconColor,
   });
 
   @override
@@ -26,7 +28,14 @@ class CustomListTile extends StatelessWidget {
           color: Colors.grey.shade200,
           shape: BoxShape.circle,
         ),
-        child: svgPath != null ? SvgPicture.asset(svgPath!) : null,
+        child: svgPath != null
+            ? SvgPicture.asset(
+                svgPath!,
+                colorFilter: iconColor != null
+                    ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
+                    : null,
+              )
+            : null,
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: Icon(Icons.chevron_right, color: AppColors.primary, size: 25),

@@ -11,6 +11,7 @@ import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/services/auth_service.dart';
 import 'package:spendigo/services/hive_service.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
+import 'package:spendigo/services/backup_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -34,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _Header(),
               _ProfileCard(),
               // _SettingsSection(),
+
+              /// ================= SETTINGS SECTION =================
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
@@ -44,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                       child: Text(
                         'Settings',
@@ -67,7 +70,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     //   svgPath: "assets/faqs.svg",
                     //   onTap: () {},
                     // ),
-                    Divider(height: 1, color: AppColors.stroke),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
                     CustomListTile(
                       title: "Bug report & Feedback",
                       svgPath: "assets/report.svg",
@@ -75,13 +81,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Get.toNamed(AppRoutesName.reportFeedback);
                       },
                     ),
-                    Divider(height: 1, color: AppColors.stroke),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
                     CustomListTile(
                       title: "Rate us on Google Play",
                       svgPath: "assets/star.svg",
                       onTap: () {},
                     ),
-                    Divider(height: 1, color: AppColors.stroke),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
                     CustomListTile(
                       title: "Share with friends",
                       svgPath: "assets/share.svg",
@@ -91,7 +103,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                     ),
-                    Divider(height: 1, color: AppColors.stroke),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
                     CustomListTile(
                       title: "Privacy Policy",
                       svgPath: "assets/privacy.svg",
@@ -103,6 +118,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              /// ================= BACKUP SECTION =================
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.stroke, width: 1.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        'Data Management',
+                        style: TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    CustomListTile(
+                      title: "Backup Data",
+                      svgPath: "assets/share.svg",
+                      iconColor: AppColors.primary,
+                      onTap: () => BackupService.exportBackup(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
+                    CustomListTile(
+                      title: "Restore Data",
+                      svgPath: "assets/wallet.svg",
+                      iconColor: AppColors.primary,
+                      onTap: () => BackupService.importBackup(),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
               // logout Button
               GestureDetector(
                 onTap: () async {
@@ -245,7 +302,7 @@ class _Avatar extends StatelessWidget {
           image: DecorationImage(
             image: controller.image.value != null
                 ? FileImage(controller.image.value!)
-                : const AssetImage("assets/profile.jpeg") as ImageProvider,
+                : const AssetImage("assets/profilem.jpg") as ImageProvider,
             fit: BoxFit.cover,
           ),
         ),

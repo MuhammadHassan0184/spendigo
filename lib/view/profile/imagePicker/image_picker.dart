@@ -29,7 +29,7 @@ class ProfileImagePicker extends StatelessWidget {
                 radius: 60,
                 backgroundImage: controller.image.value != null
                     ? FileImage(controller.image.value!)
-                    : const AssetImage("assets/profile.jpeg") as ImageProvider,
+                    : const AssetImage("assets/profilem.jpg") as ImageProvider,
               ),
             );
           }),
