@@ -33,4 +33,22 @@ class WalletModel {
       alertPercentage: alertPercentage ?? this.alertPercentage,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'balance': balance,
+      'receiveAlert': receiveAlert,
+      'alertPercentage': alertPercentage,
+    };
+  }
+
+  factory WalletModel.fromMap(Map<String, dynamic> map) {
+    return WalletModel(
+      name: map['name'] ?? '',
+      balance: (map['balance'] ?? 0.0).toDouble(),
+      receiveAlert: map['receiveAlert'] ?? false,
+      alertPercentage: (map['alertPercentage'] ?? 0.0).toDouble(),
+    );
+  }
 }

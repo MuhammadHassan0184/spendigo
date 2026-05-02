@@ -21,4 +21,5 @@ class AppRoutesName {
   static const String reportFeedback = '/reportFeedback';
   static const String privacyPolicyScreen = '/PrivacyPolicyScreen';
   static const String notificationHistory = '/notificationHistory';
+  static const String reports = '/reports';
 }

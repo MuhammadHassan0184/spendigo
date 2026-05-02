@@ -40,4 +40,24 @@ class BudgetModel {
   }
 
   double get remaining => total - spent;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'category': category,
+      'total': total,
+      'spent': spent,
+      'receiveAlert': receiveAlert,
+      'alertPercentage': alertPercentage,
+    };
+  }
+
+  factory BudgetModel.fromMap(Map<String, dynamic> map) {
+    return BudgetModel(
+      category: map['category'] ?? '',
+      total: (map['total'] ?? 0.0).toDouble(),
+      spent: (map['spent'] ?? 0.0).toDouble(),
+      receiveAlert: map['receiveAlert'] ?? false,
+      alertPercentage: (map['alertPercentage'] ?? 0.0).toDouble(),
+    );
+  }
 }

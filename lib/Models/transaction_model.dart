@@ -44,4 +44,38 @@ class TransactionModel {
     this.repeatInterval,
     this.lastRepeatedDate,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'category': category,
+      'wallet': wallet,
+      'budget': budget,
+      'note': note,
+      'amount': amount,
+      'date': date.toIso8601String(),
+      'attachmentPath': attachmentPath,
+      'isRepeating': isRepeating,
+      'repeatInterval': repeatInterval,
+      'lastRepeatedDate': lastRepeatedDate?.toIso8601String(),
+    };
+  }
+
+  factory TransactionModel.fromMap(Map<String, dynamic> map) {
+    return TransactionModel(
+      type: map['type'] ?? '',
+      category: map['category'] ?? '',
+      wallet: map['wallet'] ?? '',
+      budget: map['budget'] ?? '',
+      note: map['note'] ?? '',
+      amount: (map['amount'] ?? 0.0).toDouble(),
+      date: DateTime.parse(map['date']),
+      attachmentPath: map['attachmentPath'],
+      isRepeating: map['isRepeating'],
+      repeatInterval: map['repeatInterval'],
+      lastRepeatedDate: map['lastRepeatedDate'] != null
+          ? DateTime.parse(map['lastRepeatedDate'])
+          : null,
+    );
+  }
 }
