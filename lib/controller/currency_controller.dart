@@ -52,18 +52,23 @@ class CurrencyController extends GetxController {
   ];
 
   List<Map<String, String>> get filteredCountries {
-    if (searchQuery.isEmpty) return countryCurrencies;
-    return countryCurrencies
-        .where(
-          (c) =>
-              c['country']!.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              c['symbol']!.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ),
-        )
-        .toList();
+    List<Map<String, String>> list = searchQuery.isEmpty
+        ? List.from(countryCurrencies)
+        : countryCurrencies
+              .where(
+                (c) =>
+                    c['country']!.toLowerCase().contains(
+                      searchQuery.value.toLowerCase(),
+                    ) ||
+                    c['symbol']!.toLowerCase().contains(
+                      searchQuery.value.toLowerCase(),
+                    ),
+              )
+              .toList();
+
+    // Sort alphabetically by country name
+    list.sort((a, b) => a['country']!.compareTo(b['country']!));
+    return list;
   }
 
   var hasSeenHint = false.obs;
@@ -99,7 +104,6 @@ class CurrencyController extends GetxController {
       hasSeenHint.value = _box.get('hasSeenCurrencyHint', defaultValue: false);
     }
   }
-  
 
   void markHintAsSeen() {
     if (!hasSeenHint.value) {
