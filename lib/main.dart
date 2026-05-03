@@ -18,6 +18,7 @@ import 'package:spendigo/Models/budget_model.dart';
 import 'package:spendigo/Models/notification_model.dart';
 import 'package:spendigo/controller/notification_controller.dart';
 import 'package:spendigo/services/notification_service.dart';
+import 'package:spendigo/services/localization_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,8 +65,10 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-
+          title: 'Spendigo',
+          translations: LocalizationService(),
+          locale: LocalizationService.getCurrentLocale(),
+          fallbackLocale: LocalizationService.fallbackLocale,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),

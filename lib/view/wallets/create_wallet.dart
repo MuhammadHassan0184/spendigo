@@ -21,8 +21,8 @@ class CreateWallet extends StatelessWidget {
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
         title: controller.editingIndex.value != null
-            ? "Update Wallet"
-            : "Create Wallet",
+            ? "update_wallet".tr
+            : "create_wallet".tr,
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -46,8 +46,8 @@ class CreateWallet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Balance',
+                          Text(
+                            'balance'.tr,
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 15,
@@ -117,8 +117,8 @@ class CreateWallet extends StatelessWidget {
                         children: [
                           /// Name Field
                           CustomTextField(
-                            label: "Name",
-                            hintText: "Enter Here",
+                            label: "name".tr,
+                            hintText: "enter_here".tr,
                             controller: controller.nameController,
                           ),
 
@@ -127,12 +127,12 @@ class CreateWallet extends StatelessWidget {
                           /// 🔹 Switch
                           Row(
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Receive Alert',
+                                      'receive_alert'.tr,
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -140,7 +140,7 @@ class CreateWallet extends StatelessWidget {
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      'Receive alert when it reaches\nsome point.',
+                                      'receive_alert_desc'.tr,
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF9E9E9E),
@@ -193,8 +193,8 @@ class CreateWallet extends StatelessWidget {
                           /// 🔹 Button
                           CustomButton(
                             text: controller.editingIndex.value != null
-                                ? "Update Wallet"
-                                : "Create Wallet",
+                                ? "update_wallet".tr
+                                : "create_wallet".tr,
                             onPressed: () {
                               controller.createWallet();
                             },

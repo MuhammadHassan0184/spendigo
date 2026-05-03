@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/view/statistics/graph/Budget_graph.dart';
 import 'package:spendigo/view/statistics/graph/expense_income_graph.dart';
+import 'package:spendigo/view/statistics/graph/category_pie_chart.dart';
 import 'package:spendigo/widgets/custom_app_bar.dart';
 
 class StatisticsScreen extends StatelessWidget {
@@ -11,7 +13,7 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: CustomAppBar(title: "Statistics"),
+      appBar: CustomAppBar(title: "statistics".tr),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -24,6 +26,11 @@ class StatisticsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ExpenseVsIncomeChart(),
+            ),
+            SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CategoryPieChart(),
             ),
             SizedBox(height: 20),
           ],

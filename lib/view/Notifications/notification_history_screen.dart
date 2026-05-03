@@ -59,11 +59,11 @@ class NotificationHistoryScreen extends StatelessWidget {
               const SizedBox(width: 4),
 
               // Title
-              const Expanded(
+              Expanded(
                 child: Center(
                   child: Text(
-                    'Notifications',
-                    style: TextStyle(
+                    'notifications'.tr,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -83,9 +83,9 @@ class NotificationHistoryScreen extends StatelessWidget {
                     color: Colors.white70,
                     size: 18,
                   ),
-                  label: const Text(
-                    'Clear all',
-                    style: TextStyle(
+                  label: Text(
+                    'clear_all'.tr,
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -139,9 +139,9 @@ class NotificationHistoryScreen extends StatelessWidget {
     final now = DateTime.now();
     String label;
     if (_isSameDay(date, now)) {
-      label = 'Today';
+      label = 'today'.tr;
     } else if (_isSameDay(date, now.subtract(const Duration(days: 1)))) {
-      label = 'Yesterday';
+      label = 'yesterday'.tr;
     } else {
       final months = [
         'Jan',
@@ -326,9 +326,9 @@ class NotificationHistoryScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'No Notifications Yet',
-            style: TextStyle(
+          Text(
+            'no_notifications'.tr,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1A1A2E),
@@ -336,7 +336,7 @@ class NotificationHistoryScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'You\'ll see wallet & budget alerts here\nonce they are triggered.',
+            'notification_description'.tr,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: AppColors.grey, height: 1.5),
           ),
@@ -357,18 +357,18 @@ class NotificationHistoryScreen extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Clear All Notifications',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        title: Text(
+          'clear_confirm_title'.tr,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
-        content: const Text(
-          'This will permanently remove all notification history.',
-          style: TextStyle(fontSize: 14),
+        content: Text(
+          'clear_confirm_body'.tr,
+          style: const TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel', style: TextStyle(color: AppColors.grey)),
+            child: Text('cancel'.tr, style: TextStyle(color: AppColors.grey)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -382,7 +382,7 @@ class NotificationHistoryScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text('Clear All'),
+            child: Text('clear_all'.tr),
           ),
         ],
       ),

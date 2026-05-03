@@ -2,15 +2,15 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/controller/profile_controller.dart';
 import 'package:spendigo/services/auth_service.dart';
 import 'package:spendigo/services/hive_service.dart';
 import 'package:spendigo/widgets/setting_tile.dart';
+import 'package:spendigo/services/localization_service.dart';
+import 'package:spendigo/services/biometric_service.dart';
 import 'package:spendigo/services/backup_service.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -47,18 +47,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       child: Text(
-                        'Settings',
-                        style: TextStyle(
+                        'settings'.tr,
+                        style: const TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                     CustomListTile(
-                      title: "Password",
+                      title: "password".tr,
                       svgPath: "assets/password.svg",
                       onTap: () {
                         Get.toNamed(AppRoutesName.password);
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Divider(height: 1, color: AppColors.stroke),
                     ),
                     CustomListTile(
-                      title: "Bug report & Feedback",
+                      title: "bug_report".tr,
                       svgPath: "assets/report.svg",
                       onTap: () {
                         Get.toNamed(AppRoutesName.reportFeedback);
@@ -86,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Divider(height: 1, color: AppColors.stroke),
                     ),
                     CustomListTile(
-                      title: "Rate us on Google Play",
+                      title: "rate_us".tr,
                       svgPath: "assets/star.svg",
                       onTap: () {},
                     ),
@@ -95,7 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Divider(height: 1, color: AppColors.stroke),
                     ),
                     CustomListTile(
-                      title: "Share with friends",
+                      title: "share_with_friends".tr,
                       svgPath: "assets/share.svg",
                       onTap: () {
                         Share.share(
@@ -108,12 +108,229 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Divider(height: 1, color: AppColors.stroke),
                     ),
                     CustomListTile(
-                      title: "Privacy Policy",
+                      title: "privacy_policy".tr,
                       svgPath: "assets/privacy.svg",
                       onTap: () {
                         Get.toNamed(AppRoutesName.privacyPolicyScreen);
                       },
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Divider(height: 1, color: AppColors.stroke),
+                    ),
+                    ListTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(7),
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.language,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
+                      ),
+                      title: Text(
+                        "language".tr,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      trailing: Icon(
+                        Icons.chevron_right,
+                        color: AppColors.primary,
+                        size: 25,
+                      ),
+                      onTap: () {
+                        Get.dialog(
+                          Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Header
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary.withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.language,
+                                      color: AppColors.primary,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "select_language".tr,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+
+                                  // Language List
+                                  ...LocalizationService.langs.map((lang) {
+                                    final bool isSelected =
+                                        LocalizationService.getCurrentLocale() ==
+                                        LocalizationService.getLocaleFromLang(
+                                          lang,
+                                        );
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        LocalizationService.changeLocale(lang);
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? AppColors.primary.withOpacity(
+                                                  0.05,
+                                                )
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? AppColors.primary
+                                                : Colors.grey.shade200,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              lang,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.bold
+                                                    : FontWeight.w500,
+                                                color: isSelected
+                                                    ? AppColors.primary
+                                                    : AppColors.black,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            if (isSelected)
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: AppColors.primary,
+                                                size: 20,
+                                              )
+                                            else
+                                              Icon(
+                                                Icons.circle_outlined,
+                                                color: Colors.grey.shade300,
+                                                size: 20,
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+
+                                  const SizedBox(height: 8),
+                                  TextButton(
+                                    onPressed: () => Get.back(),
+                                    child: Text(
+                                      "cancel".tr,
+                                      style: TextStyle(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              /// ================= SECURITY SECTION =================
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.stroke, width: 1.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        'security'.tr,
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    StatefulBuilder(
+                      builder: (context, setState) {
+                        return ListTile(
+                          leading: Container(
+                            padding: const EdgeInsets.all(7),
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.fingerprint,
+                              color: AppColors.primary,
+                              size: 20,
+                            ),
+                          ),
+                          title: Text(
+                            "biometric_lock".tr,
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          trailing: Switch(
+                            value: BiometricService.isBiometricEnabled(),
+                            onChanged: (value) async {
+                              await BiometricService.setBiometricEnabled(value);
+                              setState(() {});
+                            },
+                            activeColor: AppColors.primary,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -130,18 +347,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       child: Text(
-                        'Data Management',
-                        style: TextStyle(
+                        'data_management'.tr,
+                        style: const TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                     CustomListTile(
-                      title: "Backup Data",
+                      title: "backup_data".tr,
                       svgPath: "assets/share.svg",
                       iconColor: AppColors.primary,
                       onTap: () => BackupService.exportBackup(),
@@ -151,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Divider(height: 1, color: AppColors.stroke),
                     ),
                     CustomListTile(
-                      title: "Restore Data",
+                      title: "restore_data".tr,
                       svgPath: "assets/wallet.svg",
                       iconColor: AppColors.primary,
                       onTap: () => BackupService.importBackup(),
@@ -181,8 +398,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Log Out',
-                        style: TextStyle(
+                        'logout'.tr,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -230,19 +447,21 @@ class _Header extends StatelessWidget {
             ),
           ),
           alignment: Alignment.center,
-          child: const Text(
-            'Profile',
-            style: TextStyle(
+          child: Text(
+            'profile'.tr,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        Positioned(
+        PositionedDirectional(
           top: -20,
-          left: -20,
-          child: Image.asset("assets/circle.png", width: 180),
+          start: -20,
+          child: IgnorePointer(
+            child: Image.asset("assets/circle.png", width: 180),
+          ),
         ),
       ],
     );
@@ -362,7 +581,7 @@ class _EditButton extends StatelessWidget {
             Icon(Icons.edit, color: AppColors.primary, size: 14),
             const SizedBox(width: 4),
             Text(
-              'Edit',
+              'edit'.tr,
               style: TextStyle(color: AppColors.primary, fontSize: 13),
             ),
           ],

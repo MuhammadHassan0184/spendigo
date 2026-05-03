@@ -62,8 +62,8 @@ class Home extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Good afternoon,",
-                                    style: TextStyle(
+                                    "good_afternoon".tr,
+                                    style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class Home extends StatelessWidget {
                                   Obx(
                                     () => Text(
                                       profileController.fullName.isEmpty
-                                          ? "User"
+                                          ? "user".tr
                                           : profileController.fullName,
                                       style: TextStyle(
                                         color: Colors.white,
@@ -175,10 +175,12 @@ class Home extends StatelessWidget {
                   ),
 
                   /// CIRCLE BG
-                  Positioned(
+                  PositionedDirectional(
                     top: -20,
-                    left: -20,
-                    child: Image.asset("assets/circle.png", width: 180),
+                    start: -20,
+                    child: IgnorePointer(
+                      child: Image.asset("assets/circle.png", width: 180),
+                    ),
                   ),
 
                   /// BALANCE CARD
@@ -206,7 +208,7 @@ class Home extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total Balance",
+                                "total_balance".tr,
                                 style: TextStyle(
                                   color: Colors.white70,
                                   fontSize: 14,
@@ -240,7 +242,9 @@ class Home extends StatelessWidget {
                                           ),
                                         );
 
-                                        return !currencyController.hasSeenHint.value
+                                        return !currencyController
+                                                .hasSeenHint
+                                                .value
                                             ? PulseAnimation(child: content)
                                             : content;
                                       }),
@@ -276,7 +280,7 @@ class Home extends StatelessWidget {
                                       ),
                                       SizedBox(width: 6),
                                       Text(
-                                        "Income",
+                                        "income".tr,
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ],
@@ -307,7 +311,7 @@ class Home extends StatelessWidget {
                                       ),
                                       SizedBox(width: 6),
                                       Text(
-                                        "Expenses",
+                                        "expense".tr,
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ],
@@ -353,7 +357,7 @@ class Home extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Income",
+                          "income".tr,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -362,7 +366,7 @@ class Home extends StatelessWidget {
                         InkWell(
                           onTap: () =>
                               Get.toNamed(AppRoutesName.transactionHistory),
-                          child: Text("See all"),
+                          child: Text("see_all".tr),
                         ),
                       ],
                     ),
@@ -377,7 +381,7 @@ class Home extends StatelessWidget {
 
                       if (list.isEmpty) {
                         return TransactionTile(
-                          title: "Income",
+                          title: "income".tr,
                           subtitle: "Company Ltd.",
                           amount: "+ Rs. 0.00",
                           iconPath: "assets/salary.svg",
@@ -390,7 +394,9 @@ class Home extends StatelessWidget {
                             .map(
                               (t) => TransactionTile(
                                 title: t.category,
-                                subtitle: t.note.isEmpty ? "No note" : t.note,
+                                subtitle: t.note.isEmpty
+                                    ? "no_note".tr
+                                    : t.note,
                                 amount:
                                     "+ ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                 iconPath: controller.getIconPath(t.category),
@@ -414,7 +420,7 @@ class Home extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Expenses",
+                          "expenses".tr,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -423,7 +429,7 @@ class Home extends StatelessWidget {
                         InkWell(
                           onTap: () =>
                               Get.toNamed(AppRoutesName.transactionHistory),
-                          child: Text("See all"),
+                          child: Text("see_all".tr),
                         ),
                       ],
                     ),
@@ -440,7 +446,7 @@ class Home extends StatelessWidget {
                         return Column(
                           children: [
                             TransactionTile(
-                              title: "Expences",
+                              title: "expenses".tr,
                               subtitle: "Company Ltd.",
                               amount: "- Rs. 0.00",
                               iconPath: "assets/entertainment.svg",
@@ -455,7 +461,9 @@ class Home extends StatelessWidget {
                             .map(
                               (t) => TransactionTile(
                                 title: t.category,
-                                subtitle: t.note.isEmpty ? "No note" : t.note,
+                                subtitle: t.note.isEmpty
+                                    ? "no_note".tr
+                                    : t.note,
                                 amount:
                                     "- ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
                                 iconPath: controller.getIconPath(t.category),

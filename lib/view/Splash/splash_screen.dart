@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/hive_service.dart';
+import 'package:spendigo/services/biometric_service.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -15,7 +16,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -36,9 +36,19 @@ class _SplashScreenState extends State<SplashScreen> {
       // Onboarding completed, check auth
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // User is logged in, open boxes then go to home
+        // User is logged in, open boxes
         await HiveService.openUserBoxes(user.uid);
-        HiveService.refreshAllControllers(); // Ensure data is loaded into controllers
+        HiveService.refreshAllControllers();
+
+        // Check if Biometric Lock is enabled
+        if (BiometricService.isBiometricEnabled()) {
+          bool authenticated = await BiometricService.authenticate();
+          if (!authenticated) {
+            // If authentication fails, we don't proceed (user can try again or app stays on splash)
+            return;
+          }
+        }
+
         Get.offAllNamed(AppRoutesName.mainScreen);
       } else {
         // User not logged in, go to sign in
@@ -61,9 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset('assets/spendigo-logo.svg', height: 150),
-          ],
+          children: [SvgPicture.asset('assets/spendigo-logo.svg', height: 150)],
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 
 class TransactionTile extends StatelessWidget {
@@ -42,7 +43,7 @@ class TransactionTile extends StatelessWidget {
       ),
 
       title: Text(
-        title,
+        title.tr,
         style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
       ),
 

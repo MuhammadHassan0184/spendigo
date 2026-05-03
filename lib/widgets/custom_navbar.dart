@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 
 class CustomBottomNav extends StatelessWidget {
@@ -25,11 +26,11 @@ class CustomBottomNav extends StatelessWidget {
     ];
 
     final List<String> labels = [
-      "Home",
-      "Statistics",
-      "Wallets",
-      "Budgets",
-      "Profile",
+      "home".tr,
+      "statistics".tr,
+      "wallets".tr,
+      "budgets".tr,
+      "profile".tr,
     ];
 
     return Padding(

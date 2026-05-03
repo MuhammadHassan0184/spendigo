@@ -28,7 +28,7 @@ class AddTransactionController extends GetxController
   var attachmentPath = RxnString();
 
   // Predefined lists
-  final List<String> incomeCategories = [
+  var incomeCategories = <String>[
     "Salary",
     "Freelance",
     "Investment",
@@ -38,9 +38,9 @@ class AddTransactionController extends GetxController
     "Gifts",
     "Bonus",
     "Other Income",
-  ];
+  ].obs;
 
-  final List<String> expenseCategories = [
+  var expenseCategories = <String>[
     "Food & Drink",
     "Shopping",
     "Transportation",
@@ -53,7 +53,7 @@ class AddTransactionController extends GetxController
     "Subscriptions",
     "Education",
     "Other Expense",
-  ];
+  ].obs;
 
   final List<String> defaultWallets = [
     "Cash",
@@ -93,7 +93,7 @@ class AddTransactionController extends GetxController
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-    
+
     if (FirebaseAuth.instance.currentUser != null) {
       loadTransactions();
     }
@@ -133,6 +133,19 @@ class AddTransactionController extends GetxController
 
   void setRepeatType(String value) {
     repeatType.value = value;
+  }
+
+  void addCustomCategory(String name) {
+    if (isIncome.value) {
+      if (!incomeCategories.contains(name)) {
+        incomeCategories.insert(incomeCategories.length - 1, name);
+      }
+    } else {
+      if (!expenseCategories.contains(name)) {
+        expenseCategories.insert(expenseCategories.length - 1, name);
+      }
+    }
+    category.value = name;
   }
 
   Future<void> pickImage() async {
@@ -193,12 +206,15 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance + transaction.amount
           : oldWallet.balance - transaction.amount;
-      
+
       final updatedWallet = oldWallet.copyWith(balance: newBalance);
       walletController.wallets[selectedWalletIndex] = updatedWallet;
-      
+
       // Persist wallet change
-      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
+      await walletController.updateWalletInHive(
+        selectedWalletIndex,
+        updatedWallet,
+      );
 
       // Low Balance Notification Check
       if (transaction.type == "Expense" && oldWallet.receiveAlert) {
@@ -233,12 +249,15 @@ class AddTransactionController extends GetxController
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
         final newSpent = oldBudget.spent + transaction.amount;
-        
+
         final updatedBudget = oldBudget.copyWith(spent: newSpent);
         budgetController.budgets[selectedBudgetIndex] = updatedBudget;
-        
+
         // Persist budget change
-        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
+        await budgetController.updateBudgetInHive(
+          selectedBudgetIndex,
+          updatedBudget,
+        );
 
         // Budget Low Alert Notification
         if (oldBudget.receiveAlert && oldBudget.total > 0) {
@@ -287,10 +306,13 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance - transaction.amount
           : oldWallet.balance + transaction.amount;
-      
+
       final updatedWallet = oldWallet.copyWith(balance: newBalance);
       walletController.wallets[selectedWalletIndex] = updatedWallet;
-      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
+      await walletController.updateWalletInHive(
+        selectedWalletIndex,
+        updatedWallet,
+      );
     }
 
     // 2. Reverse Budget Spent (only for expenses)
@@ -301,9 +323,14 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent - transaction.amount);
+        final updatedBudget = oldBudget.copyWith(
+          spent: oldBudget.spent - transaction.amount,
+        );
         budgetController.budgets[selectedBudgetIndex] = updatedBudget;
-        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
+        await budgetController.updateBudgetInHive(
+          selectedBudgetIndex,
+          updatedBudget,
+        );
       }
     }
 
@@ -328,10 +355,13 @@ class AddTransactionController extends GetxController
       final newBalance = transaction.type == "Income"
           ? oldWallet.balance - transaction.amount
           : oldWallet.balance + transaction.amount;
-      
+
       final updatedWallet = oldWallet.copyWith(balance: newBalance);
       walletController.wallets[selectedWalletIndex] = updatedWallet;
-      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
+      await walletController.updateWalletInHive(
+        selectedWalletIndex,
+        updatedWallet,
+      );
     }
 
     // 2. Reverse Budget Spent (only for expenses)
@@ -342,9 +372,14 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent - transaction.amount);
+        final updatedBudget = oldBudget.copyWith(
+          spent: oldBudget.spent - transaction.amount,
+        );
         budgetController.budgets[selectedBudgetIndex] = updatedBudget;
-        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
+        await budgetController.updateBudgetInHive(
+          selectedBudgetIndex,
+          updatedBudget,
+        );
       }
     }
 
@@ -473,36 +508,32 @@ class AddTransactionController extends GetxController
   String getIconPath(String category) {
     switch (category) {
       case "Salary":
+      case "Bonus":
+      case "Freelance":
+      case "Investment":
+      case "Business":
+      case "Rent Income":
         return "assets/salary.svg";
       case "Pocket Money":
         return "assets/pocketmoney.svg";
       case "Entertainment":
         return "assets/entertainment.svg";
       case "Food & Drink":
+      case "Groceries":
         return "assets/food.svg";
       case "Transportation":
       case "Fuel":
-        return "assets/transport.svg";
+      case "Shopping":
+        return "assets/budget.svg";
       case "Rent":
-      case "Rent Income":
         return "assets/home.svg";
-      case "Groceries":
-        return "assets/food.svg";
       case "Health & Fitness":
-        return "assets/health.svg";
       case "Subscriptions":
       case "Education":
-        return "assets/education.svg";
-      case "Investment":
-      case "Freelance":
-      case "Business":
-      case "Bonus":
-        return "assets/salary.svg";
-      case "Budget":
-        return "assets/budget.svg";
+        return "assets/report.svg";
       case "Wallet":
         return "assets/wallet.svg";
-      case "Shopping":
+      case "Budget":
         return "assets/budget.svg";
       default:
         return "assets/statistics.svg";
@@ -562,7 +593,6 @@ class AddTransactionController extends GetxController
             (nextDate.year == now.year &&
                 nextDate.month == now.month &&
                 nextDate.day == now.day)) {
-          
           final repeatedTransaction = TransactionModel(
             type: t.type,
             category: t.category,
@@ -590,7 +620,7 @@ class AddTransactionController extends GetxController
             repeatInterval: t.repeatInterval,
             lastRepeatedDate: nextDate,
           );
-          
+
           // Update in local list and Hive
           transactions[i] = t;
           await _box.putAt(i, t);
@@ -659,7 +689,10 @@ class AddTransactionController extends GetxController
           : oldWallet.balance - transaction.amount;
       final updatedWallet = oldWallet.copyWith(balance: newBalance);
       walletController.wallets[selectedWalletIndex] = updatedWallet;
-      await walletController.updateWalletInHive(selectedWalletIndex, updatedWallet);
+      await walletController.updateWalletInHive(
+        selectedWalletIndex,
+        updatedWallet,
+      );
     }
 
     if (transaction.type == "Expense") {
@@ -669,9 +702,14 @@ class AddTransactionController extends GetxController
       );
       if (selectedBudgetIndex != -1) {
         final oldBudget = budgetController.budgets[selectedBudgetIndex];
-        final updatedBudget = oldBudget.copyWith(spent: oldBudget.spent + transaction.amount);
+        final updatedBudget = oldBudget.copyWith(
+          spent: oldBudget.spent + transaction.amount,
+        );
         budgetController.budgets[selectedBudgetIndex] = updatedBudget;
-        await budgetController.updateBudgetInHive(selectedBudgetIndex, updatedBudget);
+        await budgetController.updateBudgetInHive(
+          selectedBudgetIndex,
+          updatedBudget,
+        );
       }
     }
   }

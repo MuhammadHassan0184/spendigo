@@ -20,8 +20,8 @@ class AddTransaction extends StatelessWidget {
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
         title: controller.transactionToEdit.value != null
-            ? "Edit Transaction"
-            : "Add Transaction",
+            ? "edit_transaction".tr
+            : "add_transaction".tr,
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -42,13 +42,13 @@ class AddTransaction extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildToggle(
-                          "Expense",
+                          "expense".tr,
                           !controller.isIncome.value,
                           () => controller.toggleIncome(false),
                         ),
                         SizedBox(width: 20),
                         _buildToggle(
-                          "Income",
+                          "income".tr,
                           controller.isIncome.value,
                           () => controller.toggleIncome(true),
                         ),
@@ -61,7 +61,7 @@ class AddTransaction extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "How much?",
+                      "how_much".tr,
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
@@ -121,19 +121,23 @@ class AddTransaction extends StatelessWidget {
                 children: [
                   Obx(
                     () => _buildDropdown(
-                      "Category",
+                      "category".tr,
                       controller.category.value,
                       controller.isIncome.value
                           ? controller.incomeCategories
                           : controller.expenseCategories,
                       (val) {
-                        controller.category.value = val;
+                        if (val == "Other Income" || val == "Other Expense") {
+                          _showCustomCategoryDialog(context);
+                        } else {
+                          controller.category.value = val;
+                        }
                       },
                     ),
                   ),
 
                   _buildDropdown(
-                    "Wallet",
+                    "wallet".tr,
                     controller.wallet.value,
                     controller.wallets,
                     (val) {
@@ -143,7 +147,7 @@ class AddTransaction extends StatelessWidget {
 
                   Obx(
                     () => _buildDropdown(
-                      "Budget",
+                      "budget".tr,
                       controller.budget.value,
                       controller.availableBudgets,
                       (val) {
@@ -155,8 +159,8 @@ class AddTransaction extends StatelessWidget {
                   SizedBox(height: 15),
 
                   CustomTextField(
-                    label: "Note",
-                    hintText: "Enter here",
+                    label: "note".tr,
+                    hintText: "enter_here".tr,
                     controller: controller.noteController,
                   ),
 
@@ -184,8 +188,8 @@ class AddTransaction extends StatelessWidget {
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                  Positioned(
-                                    right: 5,
+                                  PositionedDirectional(
+                                    end: 5,
                                     top: 5,
                                     child: GestureDetector(
                                       onTap: () =>
@@ -209,8 +213,9 @@ class AddTransaction extends StatelessWidget {
                               )
                             : Center(
                                 child: Text(
-                                  "📎  Add attachment",
-                                  style: TextStyle(color: Colors.grey),
+                                  // ignore: prefer_interpolation_to_compose_strings
+                                  "📎  " + "add_attachment".tr,
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ),
                       ),
@@ -228,13 +233,15 @@ class AddTransaction extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Repeat",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              "repeat".tr,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               controller.repeat.value
-                                  ? controller.repeatType.value
-                                  : "Repeat transaction",
+                                  ? controller.repeatType.value.tr
+                                  : "repeat_transaction".tr,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
@@ -276,10 +283,10 @@ class AddTransaction extends StatelessWidget {
                         ),
                         child: Text(
                           controller.transactionToEdit.value != null
-                              ? "Update Transaction"
+                              ? "update_transaction".tr
                               : (controller.isIncome.value
-                                    ? "Add Income"
-                                    : "Add Expense"),
+                                    ? "add_income".tr
+                                    : "add_expense".tr),
                           style: TextStyle(
                             fontSize: 16,
                             color: AppColors.white,
@@ -355,7 +362,7 @@ class AddTransaction extends StatelessWidget {
         DropdownButtonFormField<String>(
           // ignore: deprecated_member_use
           value: items.contains(value) ? value : null,
-          hint: Text("Select"),
+          hint: Text("select".tr),
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
@@ -370,7 +377,7 @@ class AddTransaction extends StatelessWidget {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
           ),
           items: items
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .map((e) => DropdownMenuItem(value: e, child: Text(e.tr)))
               .toList(),
           onChanged: onChanged,
         ),
@@ -409,7 +416,7 @@ class AddTransaction extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Repeat",
+                      "repeat".tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -433,7 +440,7 @@ class AddTransaction extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              e,
+                              e.tr,
                               style: TextStyle(
                                 color: isSelected
                                     ? AppColors.primary
@@ -466,6 +473,63 @@ class AddTransaction extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showCustomCategoryDialog(BuildContext context) {
+    final TextEditingController customCatController = TextEditingController();
+
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text("category".tr),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: customCatController,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: "Enter custom category",
+                hintStyle: TextStyle(fontSize: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.stroke),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.stroke),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.stroke),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text("cancel".tr, style: TextStyle(color: Colors.black)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (customCatController.text.isNotEmpty) {
+                controller.addCustomCategory(customCatController.text);
+                Get.back();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: Text("add".tr, style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 }

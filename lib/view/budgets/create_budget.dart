@@ -20,8 +20,8 @@ class CreateBudget extends StatelessWidget {
       backgroundColor: AppColors.primary,
       appBar: CustomAppBar(
         title: controller.editingIndex.value != null
-            ? "Update Budget"
-            : "Create Budget",
+            ? "update_budget".tr
+            : "create_budget".tr,
         showBackButton: true,
         arrowColor: Colors.white,
         backgroundColor: AppColors.primary,
@@ -44,8 +44,8 @@ class CreateBudget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'How much do you want to spend?',
+                          Text(
+                            'how_much_spend'.tr,
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 15,
@@ -114,8 +114,8 @@ class CreateBudget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           /// 🔹 Category Dropdown
-                          const Text(
-                            'Category',
+                          Text(
+                            'category'.tr,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -138,14 +138,14 @@ class CreateBudget extends StatelessWidget {
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
                                   isExpanded: true,
-                                  hint: const Text('Select'),
+                                  hint: Text('select'.tr),
                                   value: controller.selectedCategory.value,
                                   icon: const Icon(Icons.keyboard_arrow_down),
                                   items: controller.categories
                                       .map(
                                         (cat) => DropdownMenuItem(
                                           value: cat,
-                                          child: Text(cat),
+                                          child: Text(cat.tr),
                                         ),
                                       )
                                       .toList(),
@@ -162,12 +162,12 @@ class CreateBudget extends StatelessWidget {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Expanded(
+                              Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Receive Alert',
+                                      'receive_alert'.tr,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -175,7 +175,7 @@ class CreateBudget extends StatelessWidget {
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      'Receive alert when it reaches\nsome point.',
+                                      'receive_alert_desc'.tr,
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF9E9E9E),
@@ -229,8 +229,8 @@ class CreateBudget extends StatelessWidget {
                           Obx(
                             () => CustomButton(
                               text: controller.editingIndex.value != null
-                                  ? "Update Budget"
-                                  : "Create Budget",
+                                  ? "update_budget".tr
+                                  : "create_budget".tr,
                               onPressed: () {
                                 controller.createBudget();
                               },

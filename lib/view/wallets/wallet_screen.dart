@@ -21,7 +21,7 @@ class WalletScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: CustomAppBar(title: "Wallets"),
+      appBar: CustomAppBar(title: "wallets".tr),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -38,7 +38,7 @@ class WalletScreen extends StatelessWidget {
                     WalletTile(
                       amount:
                           "${Get.find<CurrencyController>().selectedCurrency.value} 0.00",
-                      title: "No Wallets Added",
+                      title: "no_wallets_added".tr,
                       onTap: () {},
                     ),
                   ],
@@ -108,9 +108,9 @@ class WalletScreen extends StatelessWidget {
               const SizedBox(height: 15),
 
               // 📝 Title
-              const Text(
-                "Delete Wallet",
-                style: TextStyle(
+              Text(
+                "delete_wallet".tr,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -121,7 +121,7 @@ class WalletScreen extends StatelessWidget {
 
               // 📄 Description
               Text(
-                "Are you sure you want to delete '$walletName'?",
+                "${"delete_confirm".tr} '$walletName'?",
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
@@ -143,9 +143,9 @@ class WalletScreen extends StatelessWidget {
                       onPressed: () {
                         Get.back();
                       },
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: Colors.black),
+                      child: Text(
+                        "cancel".tr,
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -171,9 +171,9 @@ class WalletScreen extends StatelessWidget {
                           // agar navigation chahiye ho to yahan add karo
                         });
                       },
-                      child: const Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        "delete".tr,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

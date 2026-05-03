@@ -13,14 +13,14 @@ class ReportsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: CustomAppBar(title: "Financial Reports", showBackButton: true),
+      appBar: CustomAppBar(title: "financial_reports".tr, showBackButton: true),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Select Report Period",
+            Text(
+              "select_report_period".tr,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
@@ -40,7 +40,7 @@ class ReportsScreen extends StatelessWidget {
                     items: controller.ranges.map((String range) {
                       return DropdownMenuItem<String>(
                         value: range,
-                        child: Text(range),
+                        child: Text(range.tr),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -54,15 +54,15 @@ class ReportsScreen extends StatelessWidget {
             const SizedBox(height: 30),
 
             // Summary Section
-            const Text(
-              "Summary",
+            Text(
+              "summary".tr,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
 
             Obx(
               () => _buildSummaryCard(
-                "Income",
+                "income".tr,
                 "${controller.currencyController.selectedCurrency.value} ${controller.totalIncome.toStringAsFixed(0)}",
                 AppColors.secondary,
               ),
@@ -70,7 +70,7 @@ class ReportsScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Obx(
               () => _buildSummaryCard(
-                "Expense",
+                "expense".tr,
                 "${controller.currencyController.selectedCurrency.value} ${controller.totalExpense.toStringAsFixed(0)}",
                 Colors.red,
               ),
@@ -89,13 +89,13 @@ class ReportsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 alignment: Alignment.center,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.picture_as_pdf, color: Colors.white),
                     SizedBox(width: 10),
                     Text(
-                      "Export to PDF",
+                      "export_pdf".tr,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

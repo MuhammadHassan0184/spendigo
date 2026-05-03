@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
 
 class WalletTile extends StatelessWidget {
@@ -48,7 +49,7 @@ class WalletTile extends StatelessWidget {
           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          title,
+          title.tr,
           style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.grey),
         ),
         trailing: Icon(Icons.keyboard_arrow_right, color: AppColors.grey),

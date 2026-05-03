@@ -32,7 +32,7 @@ class TransactionDetails extends StatelessWidget {
       return Scaffold(
         backgroundColor: AppColors.white,
         appBar: CustomAppBar(
-          title: "Transaction Details",
+          title: "transaction_details".tr,
           showBackButton: true,
           actions: [
             IconButton(
@@ -75,7 +75,7 @@ class TransactionDetails extends StatelessWidget {
 
                           // 📝 Title
                           Text(
-                            "Delete Transaction",
+                            "delete_transaction".tr,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -87,7 +87,7 @@ class TransactionDetails extends StatelessWidget {
 
                           // 📄 Description
                           Text(
-                            "Are you sure you want to delete this transaction?",
+                            "delete_transaction_confirm".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
@@ -112,7 +112,7 @@ class TransactionDetails extends StatelessWidget {
                                     Get.back();
                                   },
                                   child: Text(
-                                    "Cancel",
+                                    "cancel".tr,
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ),
@@ -144,7 +144,7 @@ class TransactionDetails extends StatelessWidget {
                                     );
                                   },
                                   child: Text(
-                                    "Delete",
+                                    "delete".tr,
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -193,7 +193,7 @@ class TransactionDetails extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        currentTransaction.category,
+                        currentTransaction.category.tr,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -212,26 +212,26 @@ class TransactionDetails extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 40),
-                _buildDetailItem("Type", currentTransaction.type),
+                _buildDetailItem("type".tr, currentTransaction.type.tr),
                 _buildDetailItem(
-                  "Date",
+                  "date".tr,
                   DateFormat(
                     'MMM dd, yyyy - hh:mm a',
                   ).format(currentTransaction.date),
                 ),
-                _buildDetailItem("Wallet", currentTransaction.wallet),
-                _buildDetailItem("Budget", currentTransaction.budget),
+                _buildDetailItem("wallet".tr, currentTransaction.wallet.tr),
+                _buildDetailItem("budget".tr, currentTransaction.budget.tr),
                 _buildDetailItem(
-                  "Note",
+                  "note".tr,
                   currentTransaction.note.isEmpty
-                      ? "No note added"
+                      ? "no_note_added".tr
                       : currentTransaction.note,
                 ),
 
                 if (currentTransaction.attachmentPath != null) ...[
                   SizedBox(height: 20),
                   Text(
-                    "Attachment",
+                    "attachment".tr,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -249,7 +249,7 @@ class TransactionDetails extends StatelessWidget {
                         return Container(
                           height: 100,
                           color: Colors.grey.shade200,
-                          child: Center(child: Text("Image not found")),
+                          child: Center(child: Text("image_not_found".tr)),
                         );
                       },
                     ),

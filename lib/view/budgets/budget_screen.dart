@@ -18,7 +18,7 @@ class BudgetsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: CustomAppBar(title: 'Budgets'),
+      appBar: CustomAppBar(title: 'budgets'.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -29,7 +29,7 @@ class BudgetsScreen extends StatelessWidget {
                   return Column(
                     children: [
                       _BudgetCard(
-                        category: 'Default Budget',
+                        category: 'default_budget'.tr,
                         remaining: 0,
                         spent: 0,
                         total: 0,
@@ -122,7 +122,7 @@ class _BudgetCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    category,
+                    category.tr,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -135,7 +135,7 @@ class _BudgetCard extends StatelessWidget {
             const SizedBox(height: 12),
             // Remaining
             Text(
-              'Remaining ${Get.find<CurrencyController>().selectedCurrency.value} ${remaining.toStringAsFixed(0)}',
+              '${"remaining".tr} ${Get.find<CurrencyController>().selectedCurrency.value} ${remaining.toStringAsFixed(0)}',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
@@ -155,7 +155,7 @@ class _BudgetCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '${Get.find<CurrencyController>().selectedCurrency.value}${spent.toStringAsFixed(0)} of ${Get.find<CurrencyController>().selectedCurrency.value}${total.toStringAsFixed(0)}',
+              '${Get.find<CurrencyController>().selectedCurrency.value}${spent.toStringAsFixed(0)} ${"of".tr} ${Get.find<CurrencyController>().selectedCurrency.value}${total.toStringAsFixed(0)}',
               style: TextStyle(fontSize: 13, color: AppColors.grey),
             ),
           ],

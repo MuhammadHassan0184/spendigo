@@ -20,7 +20,7 @@ class TransactionHistory extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.white,
         appBar: CustomAppBar(
-          title: "Transaction History",
+          title: "transaction_history".tr,
           showBackButton: true,
         ),
         body: Column(
@@ -30,8 +30,8 @@ class TransactionHistory extends StatelessWidget {
               unselectedLabelColor: Colors.grey,
               indicatorColor: AppColors.primary,
               tabs: [
-                Tab(text: "Income"),
-                Tab(text: "Expense"),
+                Tab(text: "income".tr),
+                Tab(text: "expense".tr),
               ],
             ),
             Expanded(
@@ -51,7 +51,11 @@ class TransactionHistory extends StatelessWidget {
           .where((t) => t.type == type)
           .toList();
       if (list.isEmpty) {
-        return Center(child: Text("No $type transactions yet"));
+        return Center(
+          child: Text(
+            type == "Income" ? "no_income_yet".tr : "no_expense_yet".tr,
+          ),
+        );
       }
       return ListView.builder(
         padding: EdgeInsets.all(20),
@@ -60,7 +64,7 @@ class TransactionHistory extends StatelessWidget {
           final t = list[index];
           return TransactionTile(
             title: t.category,
-            subtitle: t.note.isEmpty ? "No note" : t.note,
+            subtitle: t.note.isEmpty ? "no_note".tr : t.note,
             amount:
                 "${type == "Income" ? "+" : "-"} ${Get.find<CurrencyController>().selectedCurrency.value} ${t.amount.toStringAsFixed(2)}",
             iconPath: controller.getIconPath(t.category),
