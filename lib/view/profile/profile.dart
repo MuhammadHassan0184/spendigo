@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, deprecated_member_use
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spendigo/config/colors.dart';
@@ -382,7 +381,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () async {
                   HiveService.clearAllControllers(); // Clear UI state before firebase logout
                   await _authService.logout(); // logout from firebase
-                  print("After logout: ${FirebaseAuth.instance.currentUser}");
+                  LocalizationService.resetToDefault(); // reset locale to default
                   Get.offAllNamed(
                     AppRoutesName.signIn,
                   ); // clear stack & go login

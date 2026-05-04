@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spendigo/config/routes/routes_name.dart';
 import 'package:spendigo/services/auth_service.dart';
 import 'package:spendigo/services/hive_service.dart';
+import 'package:spendigo/services/localization_service.dart';
 import 'package:spendigo/widgets/custom_snackbar.dart';
 
 class SigninController extends GetxController {
@@ -40,6 +41,7 @@ class SigninController extends GetxController {
         );
 
         await HiveService.openUserBoxes(userCredential.user!.uid);
+        await LocalizationService.updateAppLocale();
         HiveService.refreshAllControllers();
 
         Get.offAllNamed(AppRoutesName.mainScreen);

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,6 +50,12 @@ void main() async {
   Hive.registerAdapter(NotificationModelAdapter());
 
   await Hive.openBox('settings');
+
+  // Also open user settings if logged in
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    await Hive.openBox('settings_${currentUser.uid}');
+  }
 
   runApp(const MyApp());
 }

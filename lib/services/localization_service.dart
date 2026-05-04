@@ -600,7 +600,7 @@ class LocalizationService extends Translations {
     // Save to Hive
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final box = Hive.box('settings_$uid');
+      final box = await Hive.openBox('settings_$uid');
       await box.put('language', lang);
     }
   }
@@ -614,11 +614,30 @@ class LocalizationService extends Translations {
 
   static Locale getCurrentLocale() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null && Hive.isBoxOpen('settings_$uid')) {
-      final box = Hive.box('settings_$uid');
-      final lang = box.get('language', defaultValue: 'English');
-      return getLocaleFromLang(lang);
+    if (uid != null) {
+      // If box isn't open, we can't await it here since this is called in build
+      // But we should have opened it in main() or during login
+      if (Hive.isBoxOpen('settings_$uid')) {
+        final box = Hive.box('settings_$uid');
+        final lang = box.get('language', defaultValue: 'English');
+        return getLocaleFromLang(lang);
+      }
     }
     return locale;
+  }
+
+  // New method to update locale after login
+  static Future<void> updateAppLocale() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final box = await Hive.openBox('settings_$uid');
+      final lang = box.get('language', defaultValue: 'English');
+      Get.updateLocale(getLocaleFromLang(lang));
+    }
+  }
+
+  // New method to reset to default on logout
+  static void resetToDefault() {
+    Get.updateLocale(locale);
   }
 }
