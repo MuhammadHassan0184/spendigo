@@ -5,6 +5,7 @@ import 'package:spendigo/config/colors.dart';
 class CustomListTile extends StatelessWidget {
   final String title;
   final String? svgPath;
+  final String? imagePath;
   final VoidCallback? onTap;
   final Color? iconColor;
 
@@ -12,6 +13,7 @@ class CustomListTile extends StatelessWidget {
     super.key,
     required this.title,
     this.svgPath,
+    this.imagePath,
     this.onTap,
     this.iconColor,
   });
@@ -28,14 +30,20 @@ class CustomListTile extends StatelessWidget {
           color: Colors.grey.shade200,
           shape: BoxShape.circle,
         ),
-        child: svgPath != null
-            ? SvgPicture.asset(
-                svgPath!,
-                colorFilter: iconColor != null
-                    ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-                    : null,
+        child: imagePath != null
+            ? Image.asset(
+                imagePath!,
+                color: iconColor,
+                colorBlendMode: iconColor != null ? BlendMode.srcIn : null,
               )
-            : null,
+            : (svgPath != null
+                  ? SvgPicture.asset(
+                      svgPath!,
+                      colorFilter: iconColor != null
+                          ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
+                          : null,
+                    )
+                  : null),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: Icon(Icons.chevron_right, color: AppColors.primary, size: 25),

@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.language,
+                          Icons.language_rounded,
                           color: AppColors.primary,
                           size: 20,
                         ),
@@ -358,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     CustomListTile(
                       title: "backup_data".tr,
-                      svgPath: "assets/share.svg",
+                      imagePath: "assets/backup.png",
                       iconColor: AppColors.primary,
                       onTap: () => BackupService.exportBackup(),
                     ),
@@ -368,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     CustomListTile(
                       title: "restore_data".tr,
-                      svgPath: "assets/wallet.svg",
+                      imagePath: "assets/restore.png",
                       iconColor: AppColors.primary,
                       onTap: () => BackupService.importBackup(),
                     ),
