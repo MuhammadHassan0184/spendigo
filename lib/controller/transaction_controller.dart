@@ -169,6 +169,40 @@ class AddTransactionController extends GetxController
       showCustomSnackBar("Error", "Please select a category", isError: true);
       return;
     }
+    // ----------------------------------------------------------------------------
+    // 🔹 Balance Validation for Expenses
+    if (!isIncome.value) {
+      final walletController = Get.find<CreateWalletController>();
+      final walletName = wallet.value ?? "Default";
+      final selectedWalletIndex = walletController.wallets.indexWhere(
+        (w) => w.name == walletName,
+      );
+
+      double availableBalance = 0;
+      if (selectedWalletIndex != -1) {
+        availableBalance =
+            walletController.wallets[selectedWalletIndex].balance;
+      }
+
+      // If editing, we need to account for the old transaction's amount
+      if (transactionToEdit.value != null &&
+          transactionToEdit.value!.wallet == walletName) {
+        if (transactionToEdit.value!.type == "Expense") {
+          availableBalance += transactionToEdit.value!.amount;
+        } else {
+          availableBalance -= transactionToEdit.value!.amount;
+        }
+      }
+
+      if (amount > availableBalance) {
+        showCustomSnackBar(
+          "Error",
+          "Insufficient balance in $walletName wallet. Current: ${availableBalance.toStringAsFixed(2)}",
+          isError: true,
+        );
+        return;
+      }
+    }
 
     final transaction = TransactionModel(
       type: isIncome.value ? "Income" : "Expense",
@@ -218,7 +252,8 @@ class AddTransactionController extends GetxController
 
       // Low Balance Notification Check
       if (transaction.type == "Expense" && oldWallet.receiveAlert) {
-        final threshold = oldWallet.initialBalance * (oldWallet.alertPercentage / 100);
+        final threshold =
+            oldWallet.initialBalance * (oldWallet.alertPercentage / 100);
         if (newBalance <= threshold && oldWallet.balance > threshold) {
           NotificationService.showNotification(
             'Low Balance Alert!',
