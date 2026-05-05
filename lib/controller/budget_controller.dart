@@ -42,20 +42,6 @@ class CreateBudgetController extends GetxController {
     if (FirebaseAuth.instance.currentUser != null) {
       loadBudgets();
     }
-
-    // Sync slider -> amount
-    ever(sliderValue, (double val) {
-      final amount = val * (maxSliderAmount.value / 100);
-      if (amountController.text != amount.toStringAsFixed(0)) {
-        amountController.text = amount.toStringAsFixed(0);
-      }
-    });
-
-    // Listen to maxSliderAmount changes
-    ever(maxSliderAmount, (double max) {
-      final amount = sliderValue.value * (max / 100);
-      amountController.text = amount.toStringAsFixed(0);
-    });
   }
 
   void loadBudgets() {
@@ -104,15 +90,6 @@ class CreateBudgetController extends GetxController {
     sliderValue.value = 0.0;
     maxSliderAmount.value = 50000.0;
     receiveAlert.value = true;
-  }
-
-  void updateSliderFromAmount(String value) {
-    final amount = double.tryParse(value) ?? 0.0;
-    if (amount > maxSliderAmount.value) {
-      maxSliderAmount.value = amount;
-    }
-    final newValue = (amount / maxSliderAmount.value) * 100;
-    sliderValue.value = newValue.clamp(0.0, 100.0);
   }
 
   double get budgetAmount => double.tryParse(amountController.text) ?? 0.0;

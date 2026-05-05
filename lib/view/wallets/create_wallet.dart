@@ -77,8 +77,6 @@ class CreateWallet extends StatelessWidget {
                                   controller: controller.amountController,
                                   keyboardType: TextInputType.number,
                                   cursorColor: Colors.white,
-                                  onChanged: (val) =>
-                                      controller.updateSliderFromAmount(val),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 48,

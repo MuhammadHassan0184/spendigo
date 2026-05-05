@@ -35,13 +35,9 @@ class CreateWalletController extends GetxController {
       loadWallets();
     }
 
-    // Sync slider -> amount
-    ever(sliderValue, (double val) {
-      final amount = val * (maxSliderAmount / 100);
-      if (amountController.text != amount.toStringAsFixed(0)) {
-        amountController.text = amount.toStringAsFixed(0);
-      }
-    });
+    if (FirebaseAuth.instance.currentUser != null) {
+      loadWallets();
+    }
   }
 
   void loadWallets() {
@@ -88,12 +84,6 @@ class CreateWalletController extends GetxController {
     receiveAlert.value = true;
   }
 
-  void updateSliderFromAmount(String value) {
-    final amount = double.tryParse(value) ?? 0.0;
-    final newValue = (amount / maxSliderAmount) * 100;
-    sliderValue.value = newValue.clamp(0.0, 100.0);
-  }
-
   double get totalWealth =>
       wallets.fold(0.0, (sum, wallet) => sum + wallet.balance);
 
@@ -115,6 +105,7 @@ class CreateWalletController extends GetxController {
       balance: budgetAmount,
       receiveAlert: receiveAlert.value,
       alertPercentage: sliderValue.value,
+      initialBalance: budgetAmount,
     );
 
     if (editingIndex.value != null) {

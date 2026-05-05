@@ -218,8 +218,7 @@ class AddTransactionController extends GetxController
 
       // Low Balance Notification Check
       if (transaction.type == "Expense" && oldWallet.receiveAlert) {
-        final initialBalance = oldWallet.alertPercentage * 1000.0;
-        final threshold = initialBalance * 0.2;
+        final threshold = oldWallet.initialBalance * (oldWallet.alertPercentage / 100);
         if (newBalance <= threshold && oldWallet.balance > threshold) {
           NotificationService.showNotification(
             'Low Balance Alert!',
@@ -235,6 +234,9 @@ class AddTransactionController extends GetxController
             : -transaction.amount,
         receiveAlert: false,
         alertPercentage: 0,
+        initialBalance: transaction.type == "Income"
+            ? transaction.amount
+            : -transaction.amount,
       );
       walletController.wallets.add(newWallet);
       await walletController.addWalletToHive(newWallet);
