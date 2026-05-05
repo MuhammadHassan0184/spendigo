@@ -70,22 +70,34 @@ class TotalWealthChart extends StatelessWidget {
 
     List<FlSpot> spots = List.generate(6, (i) => FlSpot(i.toDouble(), wealthData[i]));
 
-    double maxY = 0;
-    for (var val in wealthData) { if (val > maxY) maxY = val; }
-    maxY = maxY == 0 ? 100 : maxY * 1.2;
+    double minVal = wealthData.isEmpty ? 0 : wealthData.reduce((a, b) => a < b ? a : b);
+    double maxVal = wealthData.isEmpty ? 100 : wealthData.reduce((a, b) => a > b ? a : b);
+
+    // Ensure we include 0 and have a reasonable default range
+    double viewMin = minVal < 0 ? minVal : 0;
+    double viewMax = maxVal > 0 ? maxVal : 100;
+    double range = viewMax - viewMin;
+    if (range == 0) range = 100;
+
+    // Add 15% padding to accommodate curved lines and spikes
+    double minY = viewMin - (range * 0.15);
+    double maxY = viewMax + (range * 0.15);
+    double interval = (maxY - minY) / 5;
+    if (interval <= 0) interval = 20;
 
     return SizedBox(
       height: width * 0.6,
       child: LineChart(
         LineChartData(
+          clipData: const FlClipData.all(),
           minX: 0,
           maxX: 5,
-          minY: 0,
+          minY: minY,
           maxY: maxY,
           gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
-            horizontalInterval: maxY / 5,
+            horizontalInterval: interval,
             verticalInterval: 1,
             getDrawingHorizontalLine: (value) =>
                 FlLine(color: AppColors.stroke, strokeWidth: 1),
@@ -96,10 +108,10 @@ class TotalWealthChart extends StatelessWidget {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                interval: maxY / 5,
+                interval: interval,
                 reservedSize: 40,
                 getTitlesWidget: (value, _) => Text(
-                  value >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
+                  value.abs() >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
                   style: TextStyle(
                     fontSize: width * 0.025,
                     color: AppColors.grey,
@@ -143,6 +155,7 @@ class TotalWealthChart extends StatelessWidget {
                 show: true,
                 gradient: LinearGradient(
                   colors: [
+                    // ignore: deprecated_member_use
                     AppColors.black.withOpacity(0.15),
                     Colors.transparent,
                   ],
