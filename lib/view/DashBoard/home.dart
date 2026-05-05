@@ -101,7 +101,7 @@ class Home extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: const Icon(
-                                        Icons.assessment_outlined,
+                                        Icons.picture_as_pdf,
                                         color: Colors.white,
                                       ),
                                     ),
