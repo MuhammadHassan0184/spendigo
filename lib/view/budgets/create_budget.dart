@@ -85,6 +85,8 @@ class CreateBudget extends StatelessWidget {
                                     border: InputBorder.none,
                                     isDense: true,
                                     contentPadding: EdgeInsets.zero,
+                                    hintText: "0",
+                                    hintStyle: TextStyle(color: Colors.white54),
                                   ),
                                 ),
                               ),

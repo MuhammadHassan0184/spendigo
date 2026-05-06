@@ -29,11 +29,19 @@ class CreateWalletController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    amountController.text = "0";
+    // Start with empty or hint-based "0" instead of literal "0" text
+    amountController.text = "";
 
-    if (FirebaseAuth.instance.currentUser != null) {
-      loadWallets();
-    }
+    // Listener to handle the "0333" issue
+    amountController.addListener(() {
+      String text = amountController.text;
+      if (text.length > 1 && text.startsWith("0") && !text.contains(".")) {
+        amountController.text = text.substring(1);
+        amountController.selection = TextSelection.fromPosition(
+          TextPosition(offset: amountController.text.length),
+        );
+      }
+    });
 
     if (FirebaseAuth.instance.currentUser != null) {
       loadWallets();
