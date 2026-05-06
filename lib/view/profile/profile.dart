@@ -126,10 +126,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Colors.grey.shade200,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          Icons.language_rounded,
+                        child: Image.asset(
+                          "assets/language.png",
                           color: AppColors.primary,
-                          size: 20,
+                          width: 20,
+                          height: 20,
                         ),
                       ),
                       title: Text(
