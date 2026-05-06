@@ -125,6 +125,9 @@ class AddTransactionController extends GetxController
   void toggleIncome(bool value) {
     isIncome.value = value;
     category.value = null; // Clear category when type changes
+    if (value) {
+      budget.value = null; // Clear budget if switching to Income
+    }
   }
 
   void toggleRepeat(bool value) {
