@@ -58,20 +58,37 @@ class TotalWealthChart extends StatelessWidget {
 
   Widget _chart(double width, List<double> wealthData) {
     const monthNames = [
-      "JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
-      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
     ];
-    
+
     final now = DateTime.now();
     final months = List.generate(6, (i) {
       final date = DateTime(now.year, now.month - (5 - i), 1);
       return monthNames[date.month - 1];
     });
 
-    List<FlSpot> spots = List.generate(6, (i) => FlSpot(i.toDouble(), wealthData[i]));
+    List<FlSpot> spots = List.generate(
+      6,
+      (i) => FlSpot(i.toDouble(), wealthData[i]),
+    );
 
-    double minVal = wealthData.isEmpty ? 0 : wealthData.reduce((a, b) => a < b ? a : b);
-    double maxVal = wealthData.isEmpty ? 100 : wealthData.reduce((a, b) => a > b ? a : b);
+    double minVal = wealthData.isEmpty
+        ? 0
+        : wealthData.reduce((a, b) => a < b ? a : b);
+    double maxVal = wealthData.isEmpty
+        ? 100
+        : wealthData.reduce((a, b) => a > b ? a : b);
 
     // Ensure we include 0 and have a reasonable default range
     double viewMin = minVal < 0 ? minVal : 0;
@@ -79,9 +96,9 @@ class TotalWealthChart extends StatelessWidget {
     double range = viewMax - viewMin;
     if (range == 0) range = 100;
 
-    // Add 15% padding to accommodate curved lines and spikes
-    double minY = viewMin - (range * 0.15);
-    double maxY = viewMax + (range * 0.15);
+    // Add padding to handle curves and spikes
+    double minY = viewMin - (range * 0.1);
+    double maxY = viewMax + (range * 0.2); // Extra padding for top labels
     double interval = (maxY - minY) / 5;
     if (interval <= 0) interval = 20;
 
@@ -111,7 +128,9 @@ class TotalWealthChart extends StatelessWidget {
                 interval: interval,
                 reservedSize: 40,
                 getTitlesWidget: (value, _) => Text(
-                  value.abs() >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
+                  value.abs() >= 1000
+                      ? '${(value / 1000).toStringAsFixed(0)}k'
+                      : value.toStringAsFixed(0),
                   style: TextStyle(
                     fontSize: width * 0.025,
                     color: AppColors.grey,
@@ -140,8 +159,12 @@ class TotalWealthChart extends StatelessWidget {
                 },
               ),
             ),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
           borderData: FlBorderData(show: false),
           lineBarsData: [
@@ -182,7 +205,11 @@ class TotalWealthChart extends StatelessWidget {
                 return spots.map((spot) {
                   return LineTooltipItem(
                     "Rs. ${spot.y.toStringAsFixed(0)}",
-                    const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   );
                 }).toList();
               },

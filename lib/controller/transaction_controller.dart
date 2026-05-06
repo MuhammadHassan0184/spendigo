@@ -537,12 +537,8 @@ class AddTransactionController extends GetxController
       0.0,
       (sum, b) => sum + b.total,
     );
-    return [
-      totalBudget * 0.8,
-      totalBudget * 0.9,
-      totalBudget * 1.1,
-      totalBudget,
-    ];
+    // Return the actual total budget for all months instead of fake factors
+    return List.filled(4, totalBudget);
   }
 
   String getIconPath(String category) {

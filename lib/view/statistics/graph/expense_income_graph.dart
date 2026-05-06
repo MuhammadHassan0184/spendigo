@@ -14,8 +14,18 @@ class ExpenseVsIncomeChart extends StatelessWidget {
     final controller = Get.find<AddTransactionController>();
 
     const monthNames = [
-      "JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
-      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
     ];
 
     return Obx(() {
@@ -23,10 +33,20 @@ class ExpenseVsIncomeChart extends StatelessWidget {
       final expenseData = controller.monthlyExpense;
 
       // Calculate max Y for scaling
-      double maxY = 0;
-      for (var val in incomeData) { if (val > maxY) maxY = val; }
-      for (var val in expenseData) { if (val > maxY) maxY = val; }
-      maxY = maxY == 0 ? 100 : maxY * 1.2;
+      double maxVal = 0;
+      for (var val in incomeData) {
+        if (val > maxVal) maxVal = val;
+      }
+      for (var val in expenseData) {
+        if (val > maxVal) maxVal = val;
+      }
+
+      double viewMax = maxVal > 0 ? maxVal : 100;
+      double range = viewMax; // Since we start at 0
+
+      double maxY = viewMax + (range * 0.15);
+      double interval = maxY / 5;
+      if (interval <= 0) interval = 20;
 
       // Get month labels for the last 6 months
       final now = DateTime.now();
@@ -77,7 +97,7 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: true,
-                    horizontalInterval: maxY / 5,
+                    horizontalInterval: interval,
                     verticalInterval: 1,
                     getDrawingHorizontalLine: (value) =>
                         FlLine(color: AppColors.stroke, strokeWidth: 1),
@@ -89,10 +109,12 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: maxY / 5,
+                        interval: interval,
                         reservedSize: 35,
                         getTitlesWidget: (value, _) => Text(
-                          value >= 1000 ? '${(value / 1000).toStringAsFixed(0)}k' : value.toStringAsFixed(0),
+                          value >= 1000
+                              ? '${(value / 1000).toStringAsFixed(0)}k'
+                              : value.toStringAsFixed(0),
                           style: TextStyle(color: AppColors.grey, fontSize: 10),
                         ),
                       ),
@@ -102,19 +124,27 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                         showTitles: true,
                         getTitlesWidget: (value, _) {
                           int idx = value.toInt();
-                          if (idx < 0 || idx >= months.length) return const SizedBox();
+                          if (idx < 0 || idx >= months.length)
+                            return const SizedBox();
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
                               months[idx],
-                              style: TextStyle(color: AppColors.grey, fontSize: 10),
+                              style: TextStyle(
+                                color: AppColors.grey,
+                                fontSize: 10,
+                              ),
                             ),
                           );
                         },
                       ),
                     ),
-                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                   ),
                   lineBarsData: [
                     // Expense Line (Black)
@@ -133,7 +163,10 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                               strokeColor: AppColors.black,
                             ),
                       ),
-                      spots: List.generate(6, (i) => FlSpot(i.toDouble(), expenseData[i])),
+                      spots: List.generate(
+                        6,
+                        (i) => FlSpot(i.toDouble(), expenseData[i]),
+                      ),
                     ),
                     // Income Line (Green Dashed + Area)
                     LineChartBarData(
@@ -154,7 +187,10 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                         ),
                       ),
                       dotData: const FlDotData(show: false),
-                      spots: List.generate(6, (i) => FlSpot(i.toDouble(), incomeData[i])),
+                      spots: List.generate(
+                        6,
+                        (i) => FlSpot(i.toDouble(), incomeData[i]),
+                      ),
                     ),
                   ],
                   lineTouchData: LineTouchData(
@@ -164,7 +200,10 @@ class ExpenseVsIncomeChart extends StatelessWidget {
                         return spots.map((spot) {
                           return LineTooltipItem(
                             "Rs. ${spot.y.toStringAsFixed(0)}",
-                            const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                            const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           );
                         }).toList();
                       },
